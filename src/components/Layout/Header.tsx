@@ -9,7 +9,7 @@ type Props = {
 
 export const Header: VFC<Props> = ({ children, title = "HP by Nextjs" }) => {
   return (
-    <div className="flex justify-center items-center flex-col min-h-screen text-green-900 text-sm font-mono">
+    <div className="flex items-center flex-col text-green-900 text-sm font-mono">
       <Head>
         <title>{title}</title>
       </Head>
@@ -51,9 +51,9 @@ export const Header: VFC<Props> = ({ children, title = "HP by Nextjs" }) => {
           </div>
         </nav>
       </header>
-      <main className="flex flex-1 justify-center items-center flex-col w-screen">
+      {/* <main className="flex flex-1 justify-center items-center flex-col w-screen bg-orange-100">
         {children}
-      </main>
+      </main> */}
     </div>
   );
 }
