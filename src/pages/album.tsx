@@ -1,8 +1,10 @@
 import React from 'react'
 
+import { Header } from 'src/components/Header'
+
 const album = () => {
   return (
-    <div>album</div>
+    <Header>album</Header>
   )
 }
 

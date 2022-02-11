@@ -4,7 +4,7 @@ import { VFC } from "react";
 
 type Props = {
   children: any;
-  title: string;
+  title?: string;
 }
 
 export const Header: VFC<Props> = ({ children, title = "HP by Nextjs" }) => {
@@ -14,36 +14,36 @@ export const Header: VFC<Props> = ({ children, title = "HP by Nextjs" }) => {
         <title>{title}</title>
       </Head>
       <header>
-        <nav className="bg-green-800 w-screen">
+        <nav className="bg-green-900 w-screen">
           <div className="flex items-center pl-8 h-14">
             <div className="flex space-x-4">
               <Link href="/">
-                <a className="text-gray-300 hover:bg-gray-700 px-3 py-2 rounded">
-                  HOME
+                <a className="text-orange-400 hover:bg-green-800 px-3 py-2 rounded">
+                  satoWa
                 </a>
               </Link>
               <Link href="/about">
-                <a className="text-gray-300 hover:bg-gray-700 px-3 py-2 rounded">
+                <a className="text-orange-400 hover:bg-green-800 px-3 py-2 rounded">
                   About
                 </a>
               </Link>
               <Link href="/profile">
-                <a className="text-gray-300 hover:bg-gray-700 px-3 py-2 rounded">
+                <a className="text-orange-400 hover:bg-green-800 px-3 py-2 rounded">
                   Profile
                 </a>
               </Link>
               <Link href="/album">
-                <a className="text-gray-300 hover:bg-gray-700 px-3 py-2 rounded">
+                <a className="text-orange-400 hover:bg-green-800 px-3 py-2 rounded">
                   Album
                 </a>
               </Link>
               <Link href="/login">
-                <a className="text-gray-300 hover:bg-gray-700 px-3 py-2 rounded">
+                <a className="text-orange-400 hover:bg-green-800 px-3 py-2 rounded">
                   Login
                 </a>
               </Link>
               <Link href="/signup">
-                <a className="text-gray-300 hover:bg-gray-700 px-3 py-2 rounded">
+                <a className="text-orange-400 hover:bg-green-800 px-3 py-2 rounded">
                   Signup
                 </a>
               </Link>
