@@ -1,11 +1,16 @@
-import React from 'react'
+import React from "react";
 
-import { Header } from 'src/components/Layout/Header'
+import { Header } from "src/components/Layout/Header";
 
 const signup = () => {
   return (
-    <Header>signup</Header>
-  )
-}
+    <>
+      <Header>Signup</Header>
+      <main className="w-screen h-screen bg-orange-100">
+        <div className="text-5xl text-orange-500">Signup</div>
+      </main>
+    </>
+  );
+};
 
-export default signup
+export default signup;
