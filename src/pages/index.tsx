@@ -14,7 +14,7 @@ const Home: NextPage = () => {
           <link rel="icon" href="/favicon.ico" />
         </Head>
       </Header>
-      <main className="bg-orange-100">
+      <main>
         <div>
           <Image
             src="/dog.jpg"

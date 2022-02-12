@@ -6,7 +6,7 @@ const login = () => {
   return (
     <>
       <Header>login</Header>
-      <main className="w-screen h-screen bg-orange-100">
+      <main className="w-screen h-screen">
         <div className="text-5xl text-orange-500">LOGIN</div>
       </main>
     </>
