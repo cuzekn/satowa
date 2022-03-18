@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import { ReactNode, VFC } from "react";
-import { CameraIcon } from "@heroicons/react/outline"
+import { CameraIcon } from "@heroicons/react/outline";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "src/firebase/firebase";
 
@@ -18,9 +18,9 @@ export const Header: VFC<Props> = ({ children, title = "HP by Nextjs" }) => {
       <Head>
         <title>{title}</title>
       </Head>
-      <header className="flex items-center w-screen bg-green-900 ">
+      <header className="flex items-center w-screen bg-primary-darkGreen ">
         <Link href="/">
-          <a className="py-2 px-3 text-xl text-orange-500 hover:bg-green-800 rounded">
+          <a className="py-2 px-3 text-xl text-primary-orange hover:bg-primary-green rounded">
             satoWa
           </a>
         </Link>
@@ -28,33 +28,33 @@ export const Header: VFC<Props> = ({ children, title = "HP by Nextjs" }) => {
           <div className="flex items-center pl-8 h-14">
             <div className="flex space-x-4 ">
               <Link href="/about">
-                <a className="hidden py-2 px-3 text-xl text-orange-500 hover:bg-green-800 rounded sm:block">
+                <a className="hidden py-2 px-3 text-xl text-primary-orange hover:bg-primary-green rounded sm:block">
                   About
                 </a>
               </Link>
               <Link href="/profile">
-                <a className="hidden py-2 px-3 text-xl text-orange-500 hover:bg-green-800 rounded sm:block">
+                <a className="hidden py-2 px-3 text-xl text-primary-orange hover:bg-primary-green rounded sm:block">
                   Profile
                 </a>
               </Link>
               <Link href="/album">
-                <a className="hidden py-2 px-3 text-xl text-orange-500 hover:bg-green-800 rounded sm:block">
+                <a className="hidden py-2 px-3 text-xl text-primary-orange hover:bg-primary-green rounded sm:block">
                   Album
                 </a>
               </Link>
               <Link href="/login">
-                <a className="hidden py-2 px-3 text-xl text-orange-500 hover:bg-green-800 rounded sm:block">
+                <a className="hidden py-2 px-3 text-xl text-primary-orange hover:bg-primary-green rounded sm:block">
                   Login
                 </a>
               </Link>
               <Link href="/signup">
-                <a className="hidden py-2 px-3 text-xl text-orange-500 hover:bg-green-800 rounded sm:block">
+                <a className="hidden py-2 px-3 text-xl text-primary-orange hover:bg-primary-green rounded sm:block">
                   Signup
                 </a>
               </Link>
               <Link href="/addphoto">
-                <a className="hidden py-2 px-3 text-xl text-orange-500 hover:bg-green-800 rounded sm:block">
-                <CameraIcon className="w-5 h-5" />
+                <a className="hidden py-2 px-3 text-xl text-primary-orange hover:bg-primary-green rounded sm:block">
+                  <CameraIcon className="w-5 h-5" />
                 </a>
               </Link>
               {user ? (
@@ -62,9 +62,9 @@ export const Header: VFC<Props> = ({ children, title = "HP by Nextjs" }) => {
                   <Link href="/setting">
                     <a>
                       <img
-                        src={auth.currentUser.photoURL}
+                        src={auth.currentUser?.photoURL}
                         alt="UserIcon"
-                        className="rounded-full w-9 ring-1 ring-orange-500 "
+                        className="rounded-full w-9 ring-1 ring-primary-orange "
                       />
                     </a>
                   </Link>
@@ -76,7 +76,7 @@ export const Header: VFC<Props> = ({ children, title = "HP by Nextjs" }) => {
           </div>
         </nav>
       </header>
-      {/* <main className="flex flex-1 justify-center items-center flex-col w-screen bg-orange-100">
+      {/* <main className="flex flex-1 justify-center items-center flex-col w-screen bg-primary-orange">
         {children}
       </main> */}
     </>
