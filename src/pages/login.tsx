@@ -1,6 +1,6 @@
 import React from "react";
 import { signInWithPopup } from "firebase/auth";
-import { auth, provider } from "src/firebase/firebase";
+import { auth, provider } from "src/firebase/firebaseConfig";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 import { Header } from "src/components/Layout/Header";

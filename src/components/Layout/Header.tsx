@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ReactNode, VFC } from "react";
 import { CameraIcon } from "@heroicons/react/outline"
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "src/firebase/firebase";
+import { auth } from "src/firebase/firebaseConfig";
 
 type Props = {
   children: ReactNode;
@@ -62,7 +62,7 @@ export const Header: VFC<Props> = ({ children, title = "HP by Nextjs" }) => {
                   <Link href="/setting">
                     <a>
                       <img
-                        src={auth.currentUser.photoURL}
+                        src={auth.currentUser?.photoURL}
                         alt="UserIcon"
                         className="rounded-full w-9 ring-1 ring-orange-500 "
                       />
