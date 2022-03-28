@@ -51,9 +51,9 @@ export const Header: VFC<Props> = ({ children, title = "HP by Nextjs" }) => {
           </div>
         </nav>
       </header>
-      {/* <main className="flex flex-1 justify-center items-center flex-col w-screen bg-orange-100">
+      <main className="flex flex-1 justify-center items-center flex-col w-screen bg-orange-100">
         {children}
-      </main> */}
+      </main>
     </div>
   );
 };
