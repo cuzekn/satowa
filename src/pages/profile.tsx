@@ -1,11 +1,15 @@
-import React from 'react'
+import React from "react";
 
-import { Header } from 'src/components/Layout/Header'
+import { Header } from "src/components/Layout/Header";
 
 const profile = () => {
   return (
-    <Header>profile</Header>
-  )
-}
+    <>
+      <Header title="Profile">
+        
+      </Header>
+    </>
+  );
+};
 
-export default profile
+export default profile;
