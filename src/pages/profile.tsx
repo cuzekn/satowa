@@ -1,5 +1,5 @@
 import React from "react";
-import { Tabs } from "@mantine/core";
+import { Image, Tabs } from "@mantine/core";
 
 import { Header } from "src/components/Layout/Header";
 
@@ -25,11 +25,31 @@ const profile = () => {
           </div>
         </div>
         <header className="mx-2 w-full h-96 bg-slate-300 xl:max-w-6xl">
-          <img src="" alt="" />
+          <Image src="/images/sou-h.jpg" alt="sou header image" height={384} />
         </header>
-        <div className="w-full h-52 bg-white"></div>
-        <div className="my-12 w-11/12 h-96 text-lg bg-white">
-          <Tabs color="orange" tabPadding="xl">
+        <div className="w-full h-48 bg-white flex">
+          <div className="">
+            <Image
+              src="/images/sou.jpg"
+              alt="sou icon image"
+              height={100}
+              width={100}
+              radius={100}
+              m={24}
+            />
+          </div>
+          <div className="my-2">
+            <p className="text-4xl text-primary-brown py-2">そう</p>
+            <p className="text-xl text-primary-brown py-2">ニックネーム：そうちゃん</p>
+            <button className="bg-primary-orange text-white p-3 rounded-lg text-xl active:bg-primary-thinOrange">お気に入り</button>
+          </div>
+        </div>
+        <div className="my-12 w-11/12 h-96 text-lg">
+          <Tabs
+            color="orange"
+            tabPadding="xl"
+            className="lg:max-w-4xl bg-white"
+          >
             <Tabs.Tab
               label="Profile"
               variant="outline"
