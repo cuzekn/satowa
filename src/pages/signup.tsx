@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { signInWithPopup } from "firebase/auth";
 
 import { Header } from "src/components/Layout/Header";
-import { auth, provider } from "src/firebase/firebaseConfig";
+import { auth, provider, singupUserWithEmailAndPassword } from "src/firebase/firebaseConfig";
 import Link from "next/link";
 
 const Signup: React.FC = () => {
@@ -14,9 +14,11 @@ const Signup: React.FC = () => {
     await signInWithPopup(auth, provider).catch((err) => alert(err.message));
   };
 
-  const signUp = async (e) => {
+  const signUp = async (e: any) => {
     e.preventDefault();
-    console.log(user, email, password);
+    const user = await singupUserWithEmailAndPassword(email, password);
+    console.log(user);
+    
   };
 
   return (

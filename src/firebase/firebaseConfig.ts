@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword  } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
@@ -17,3 +17,18 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 export { auth, provider };
+
+export const singupUserWithEmailAndPassword = async (email: string, password: string) => {
+  const auth = getAuth();
+
+  try {
+    const user = await createUserWithEmailAndPassword(auth, email, password);
+
+    alert('登録しました');
+
+    return user;
+  } catch(error) {
+    alert('登録失敗')
+    console.log(error);    
+  }
+}
