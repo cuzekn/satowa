@@ -4,7 +4,7 @@ import { signInWithPopup } from "firebase/auth";
 import { Header } from "src/components/Layout/Header";
 import { auth, provider } from "src/firebase/firebaseConfig";
 
-const signup: React.FC = () => {
+const Signup: React.FC = () => {
   const [user, setUser] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -74,4 +74,4 @@ const signup: React.FC = () => {
   );
 };
 
-export default signup;
+export default Signup;
