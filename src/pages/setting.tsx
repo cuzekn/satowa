@@ -2,7 +2,7 @@ import React from "react";
 import { signOut } from "firebase/auth";
 
 import { Header } from "src/components/Layout/Header";
-import { auth } from "src/firebase/firebase";
+import { auth } from "src/firebase/firebaseConfig";
 
 const setting = () => {
   return (

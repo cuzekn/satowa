@@ -19,7 +19,7 @@ export const Header: VFC<Props> = ({ children, title = "HP by Nextjs" }) => {
         <title>{title}</title>
       </Head>
       <header className="flex items-center w-screen bg-primary-darkGreen ">
-        <Link href="/">
+        <Link href="/home">
           <a className="py-2 px-3 text-xl text-primary-orange hover:bg-primary-green rounded">
             satoWa
           </a>
@@ -62,7 +62,7 @@ export const Header: VFC<Props> = ({ children, title = "HP by Nextjs" }) => {
                   <Link href="/setting">
                     <a>
                       <img
-                        src={auth.currentUser?.photoURL}
+                        src={auth.currentUser?.photoURL!}
                         alt="UserIcon"
                         className="rounded-full w-9 ring-1 ring-primary-orange "
                       />
@@ -76,9 +76,9 @@ export const Header: VFC<Props> = ({ children, title = "HP by Nextjs" }) => {
           </div>
         </nav>
       </header>
-      {/* <main className="flex flex-1 justify-center items-center flex-col w-screen bg-primary-orange">
+      <main className="flex flex-1 justify-center items-center flex-col w-screen">
         {children}
-      </main> */}
+      </main>
     </>
   );
 };
