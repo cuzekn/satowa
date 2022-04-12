@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { signInWithPopup } from "firebase/auth";
 
 import { Header } from "src/components/Layout/Header";
-import { auth, provider } from "src/firebase/firebase";
+import { auth, provider } from "src/firebase/firebaseConfig";
 
 const signup: React.FC = () => {
   const [user, setUser] = useState("");
