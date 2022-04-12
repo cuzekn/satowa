@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { signInWithPopup } from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 
 import { Header } from "src/components/Layout/Header";
 import {
   auth,
+  signinWithEmailAndPassword,
   provider,
 } from "src/firebase/firebaseConfig";
 import Link from "next/link";
@@ -14,6 +15,12 @@ const Login: React.FC = () => {
 
   const signInGoogle = async () => {
     await signInWithPopup(auth, provider).catch((err) => alert(err.message));
+  };
+
+  const logIn = async (e: any) => {
+    e.preventDefault();
+    const user = await signinWithEmailAndPassword(email, password);
+    console.log(user);
   };
 
   return (
@@ -42,7 +49,7 @@ const Login: React.FC = () => {
             <h1 className="pt-7 text-4xl text-center text-primary-orange font-bold">
               LogIn
             </h1>
-            <form className="pt-8">
+            <form className="pt-8" onSubmit={logIn}>
               <div className="mx-8">
                 <p className="my-5 text-2xl">メールアドレス</p>
                 <input
@@ -59,6 +66,7 @@ const Login: React.FC = () => {
                   className="w-full h-10 rounded-md border-2 border-primary-orange hover:border-primary-thinOrange focus:outline-primary-brown px-2"
                 />
                 <button
+                  onSubmit={logIn}
                   className="my-7 w-full h-12 text-2xl text-primary-orange bg-teal-600 hover:bg-primary-green rounded-3xl shadow-lg"
                 >
                   ログイン
