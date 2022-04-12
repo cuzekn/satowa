@@ -62,7 +62,7 @@ export const Header: VFC<Props> = ({ children, title = "HP by Nextjs" }) => {
                   <Link href="/setting">
                     <a>
                       <img
-                        src={auth.currentUser?.photoURL}
+                        src={auth.currentUser?.photoURL!}
                         alt="UserIcon"
                         className="rounded-full w-9 ring-1 ring-primary-orange "
                       />
