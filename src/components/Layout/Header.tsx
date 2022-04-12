@@ -19,7 +19,7 @@ export const Header: VFC<Props> = ({ children, title = "HP by Nextjs" }) => {
         <title>{title}</title>
       </Head>
       <header className="flex items-center w-screen bg-primary-darkGreen ">
-        <Link href="/">
+        <Link href="/home">
           <a className="py-2 px-3 text-xl text-primary-orange hover:bg-primary-green rounded">
             satoWa
           </a>
@@ -76,9 +76,9 @@ export const Header: VFC<Props> = ({ children, title = "HP by Nextjs" }) => {
           </div>
         </nav>
       </header>
-      {/* <main className="flex flex-1 justify-center items-center flex-col w-screen bg-primary-orange">
+      <main className="flex flex-1 justify-center items-center flex-col w-screen">
         {children}
-      </main> */}
+      </main>
     </>
   );
 };
