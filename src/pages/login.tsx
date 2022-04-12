@@ -1,22 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { signInWithPopup } from "firebase/auth";
-import { auth, provider } from "src/firebase/firebaseConfig";
-import { useAuthState } from "react-firebase-hooks/auth";
 
 import { Header } from "src/components/Layout/Header";
+import {
+  auth,
+  provider,
+} from "src/firebase/firebaseConfig";
+import Link from "next/link";
 
-const login = () => {
-  const [user] = useAuthState(auth);
+const Login: React.FC = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const signInWithGoogle = () => {
-    signInWithPopup(auth, provider);
+  const signInGoogle = async () => {
+    await signInWithPopup(auth, provider).catch((err) => alert(err.message));
   };
 
   return (
     <>
-      <div className="w-screen h-screen">
-        <Header title="Login">login</Header>
-        <div className="fixed top-0 right-0 m-8 p-3 text-xs font-mono text-white h-6 w-6 rounded-full flex items-center justify-center bg-gray-700 sm:bg-pink-500 md:bg-orange-500 lg:bg-green-500 xl:bg-blue-500">
+      <Header title="Signup">
+        <div className="flex fixed top-0 right-0 justify-center items-center p-3 m-8 w-6 h-6 font-mono text-xs text-white bg-gray-700 rounded-full sm:bg-pink-500 md:bg-praitext-primary-orange lg:bg-green-500 xl:bg-blue-500">
           <div className="block  sm:hidden md:hidden lg:hidden xl:hidden">
             al
           </div>
@@ -33,35 +36,61 @@ const login = () => {
             xl
           </div>
         </div>
-        <main>
-          <div className="w-96 mx-auto">
-            <div className="text-5xl text-orange-500 text-center py-7">
-              LOGIN
-            </div>
-            <form action="">
-              <p className="text-2xl">メールアドレス</p>
-              <input type="text" className="my-5 h-12 w-80 rounded-md" />
-              <p className="text-2xl">パスワード</p>
-              <input type="password" className="my-5 h-12 w-80 rounded-md" />
-            </form>
-            <div className="bg-white w-80 h-12 ">
-              {user ? (
-                <>                  
-                  <button onClick={() => auth.signOut()}>
-                    <p>Googleからログアウトする</p>
-                  </button>
-                </>
-              ) : (
-                <button onClick={signInWithGoogle}>
-                  <p className="text-2xl ">Googleでログインする</p>
+
+        <div className="lg:max-w-5xl mx-auto lg:flex my-28 lg:my-28 drop-shadow-xl ">
+          <div className="mx-auto max-w-sm bg-white rounded-l-3xl sm:max-w-md md:max-w-lg lg:w-1/2">
+            <h1 className="pt-7 text-4xl text-center text-primary-orange font-bold">
+              LogIn
+            </h1>
+            <form className="pt-8">
+              <div className="mx-8">
+                <p className="my-5 text-2xl">メールアドレス</p>
+                <input
+                  type="text"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full h-10 rounded-md border-2 border-primary-orange hover:border-primary-thinOrange focus:outline-primary-brown px-2"
+                />
+                <p className="my-5 text-2xl">パスワード</p>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full h-10 rounded-md border-2 border-primary-orange hover:border-primary-thinOrange focus:outline-primary-brown px-2"
+                />
+                <button
+                  className="my-7 w-full h-12 text-2xl text-primary-orange bg-teal-600 hover:bg-primary-green rounded-3xl shadow-lg"
+                >
+                  ログイン
                 </button>
-              )}
+                <button
+                  className="my-7 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange hover:text-white rounded-3xl shadow-lg"
+                  onClick={signInGoogle}
+                >
+                  Googleでログイン
+                </button>
+                <button className="mb-7 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange hover:text-white rounded-3xl shadow-lg">
+                  Twitterでログイン
+                </button>
+              </div>
+            </form>
+          </div>
+          <div className="mx-auto max-w-sm lg:bg-primary-green rounded-r-3xl sm:max-w-md md:max-w-lg lg:w-1/2 ">
+            <div className="lg:my-64">
+              <p className="text-primary-orange text-4xl font-bold hidden lg:block text-center ">
+                SignUp
+              </p>
+              <Link href="/signup">
+                <button className="my-7 mx-auto w-96 h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange hover:text-white rounded-3xl hidden lg:block shadow-lg ">
+                  新規登録
+                </button>
+              </Link>
             </div>
           </div>
-        </main>
-      </div>
+        </div>
+      </Header>
     </>
   );
 };
 
-export default login;
+export default Login;
