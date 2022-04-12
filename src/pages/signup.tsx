@@ -14,6 +14,11 @@ const Signup: React.FC = () => {
     await signInWithPopup(auth, provider).catch((err) => alert(err.message));
   };
 
+  const signUp = async (e) => {
+    e.preventDefault();
+    console.log(user, email, password);
+  };
+
   return (
     <>
       <Header title="Signup">
@@ -52,35 +57,46 @@ const Signup: React.FC = () => {
             <h1 className="pt-7 text-4xl text-center text-primary-orange font-bold">
               SignUp
             </h1>
-            <div className="mx-8">
-              <p className="my-5 text-2xl">ユーザー名</p>
-              <input
-                type="text"
-                className="w-full h-10 rounded-md border-2 border-primary-orange hover:border-primary-thinOrange focus:outline-primary-orange px-2"
-              />
-              <p className="my-5 text-2xl">メールアドレス</p>
-              <input
-                type="text"
-                className="w-full h-10 rounded-md border-2 border-primary-orange hover:border-primary-thinOrange focus:outline-primary-brown px-2"
-              />
-              <p className="my-5 text-2xl">パスワード</p>
-              <input
-                type="text"
-                className="w-full h-10 rounded-md border-2 border-primary-orange hover:border-primary-thinOrange focus:outline-primary-brown px-2"
-              />
-              <button className="my-7 w-full h-12 text-2xl text-primary-orange bg-primary-green hover:bg-primary-darkGreen rounded-3xl shadow-lg">
-                新規登録
-              </button>
-              <button
-                className="my-7 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange rounded-3xl shadow-lg"
-                onClick={signInGoogle}
-              >
-                Googleで登録
-              </button>
-              <button className="mb-7 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange rounded-3xl shadow-lg">
-                Twitterで登録
-              </button>
-            </div>
+            <form className="pt-8" onSubmit={signUp}>
+              <div className="mx-8">
+                <p className="my-5 text-2xl">ユーザー名</p>
+                <input
+                  type="text"
+                  value={user}
+                  onChange={(e) => setUser(e.target.value)}
+                  className="w-full h-10 rounded-md border-2 border-primary-orange hover:border-primary-thinOrange focus:outline-primary-orange px-2"
+                />
+                <p className="my-5 text-2xl">メールアドレス</p>
+                <input
+                  type="text"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full h-10 rounded-md border-2 border-primary-orange hover:border-primary-thinOrange focus:outline-primary-brown px-2"
+                />
+                <p className="my-5 text-2xl">パスワード</p>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full h-10 rounded-md border-2 border-primary-orange hover:border-primary-thinOrange focus:outline-primary-brown px-2"
+                />
+                <button
+                  onSubmit={signUp}
+                  className="my-7 w-full h-12 text-2xl text-primary-orange bg-primary-green hover:bg-primary-darkGreen rounded-3xl shadow-lg"
+                >
+                  新規登録
+                </button>
+                <button
+                  className="my-7 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange rounded-3xl shadow-lg"
+                  onClick={signInGoogle}
+                >
+                  Googleで登録
+                </button>
+                <button className="mb-7 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange rounded-3xl shadow-lg">
+                  Twitterで登録
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </Header>
