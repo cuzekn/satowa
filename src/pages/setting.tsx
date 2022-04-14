@@ -9,9 +9,9 @@ const setting = () => {
   return (
     <>
       <Header title="設定">setting</Header>
-      <button onClick={() => signOut(auth)}>Logout</button>
+      <button className="bg-primary-green text-white p-3 rounded-lg mx-20 my-5" onClick={() => signOut(auth)}>Logout</button>
       <br />
-      <button onClick={() =>deleteUser(user!)}>退会</button>
+      <button className="bg-primary-green text-white p-3 rounded-lg mx-20" onClick={() =>deleteUser(user!)}>退会</button>
     </>
   );
 };
