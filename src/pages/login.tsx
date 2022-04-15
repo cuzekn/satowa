@@ -1,27 +1,51 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 
 import { Header } from "src/components/Layout/Header";
 import {
   auth,
-  signinWithEmailAndPassword,
   provider,
 } from "src/firebase/firebaseConfig";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLogin, setIsLogin] = useState(false)
+  const router = useRouter();
 
   const signInGoogle = async () => {
     await signInWithPopup(auth, provider).catch((err) => alert(err.message));
   };
+
+  const signinWithEmailAndPassword = async (email: string, password: string) => {
+    try {
+      const user = await signInWithEmailAndPassword(auth, email, password);
+      setIsLogin(true);
+      alert('ログインしました');
+      
+      return user;
+    } catch(error) {
+      setIsLogin(false);
+      alert('ログイン失敗')
+      console.log(error);    
+    }
+  }
 
   const logIn = async (e: any) => {
     e.preventDefault();
     const user = await signinWithEmailAndPassword(email, password);
     console.log(user);
   };
+
+  useEffect(() => {
+    if (isLogin == true) {
+      router.push("/home")
+    }else{
+      
+    }
+  }, [isLogin])  
 
   return (
     <>

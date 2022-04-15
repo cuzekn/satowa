@@ -32,17 +32,3 @@ export const singupUserWithEmailAndPassword = async (email: string, password: st
     console.log(error);    
   }
 }
-
-export const signinWithEmailAndPassword = async (email: string, password: string) => {
-  const auth = getAuth();
-
-  try {
-    const user = await signInWithEmailAndPassword(auth, email, password);
-    alert('ログインしました');
-    
-    return user;
-  } catch(error) {
-    alert('ログイン失敗')
-    console.log(error);    
-  }
-}
