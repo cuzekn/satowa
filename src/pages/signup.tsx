@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { onAuthStateChanged, signInWithPopup } from "firebase/auth";
 import { useRouter } from "next/router";
+import { collection, addDoc, query, getDocs } from "firebase/firestore";
 
 
 import { Header } from "src/components/Layout/Header";
-import { auth, provider, singupUserWithEmailAndPassword } from "src/firebase/firebaseConfig";
+import { auth, db, provider, singupUserWithEmailAndPassword } from "src/firebase/firebaseConfig";
 import Link from "next/link";
 
 const Signup: React.FC = () => {
-  const [user, setUser] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
@@ -20,7 +21,10 @@ const Signup: React.FC = () => {
   const signUp = async (e: any) => {
     e.preventDefault();
     const user = await singupUserWithEmailAndPassword(email, password);
-    console.log(user);
+    await addDoc(collection(db, "posts"), {
+      userName: username,
+    })
+    console.log(username);
     
   };
 
@@ -75,8 +79,8 @@ const Signup: React.FC = () => {
                 <p className="my-5 text-2xl">ユーザー名</p>
                 <input
                   type="text"
-                  value={user}
-                  onChange={(e) => setUser(e.target.value)}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="w-full h-10 rounded-md border-2 border-primary-orange hover:border-primary-thinOrange focus:outline-primary-orange px-2"
                 />
                 <p className="my-5 text-2xl">メールアドレス</p>
