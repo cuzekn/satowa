@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { signInWithPopup } from "firebase/auth";
+import React, { useEffect, useState } from "react";
+import { onAuthStateChanged, signInWithPopup } from "firebase/auth";
+import { useRouter } from "next/router";
+
 
 import { Header } from "src/components/Layout/Header";
 import { auth, provider, singupUserWithEmailAndPassword } from "src/firebase/firebaseConfig";
@@ -9,6 +11,7 @@ const Signup: React.FC = () => {
   const [user, setUser] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const signInGoogle = async () => {
     await signInWithPopup(auth, provider).catch((err) => alert(err.message));
@@ -20,6 +23,14 @@ const Signup: React.FC = () => {
     console.log(user);
     
   };
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user !== null) {
+        router.push("/home");
+      }
+    });
+  }, [signUp, signInGoogle]);
 
   return (
     <>
