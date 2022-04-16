@@ -60,7 +60,7 @@ const Signup: React.FC = () => {
                 Login
               </p>
               <Link href="/login">
-                <button className="my-7 mx-auto w-96 h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange rounded-3xl hidden lg:block shadow-lg ">
+                <button className="my-7 mx-auto w-96 h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange hover:text-white rounded-3xl hidden lg:block shadow-lg ">
                   ログイン
                 </button>
               </Link>
@@ -95,17 +95,17 @@ const Signup: React.FC = () => {
                 />
                 <button
                   onSubmit={signUp}
-                  className="my-7 w-full h-12 text-2xl text-primary-orange bg-primary-green hover:bg-primary-darkGreen rounded-3xl shadow-lg"
+                  className="my-7 w-full h-12 text-2xl text-primary-orange bg-teal-600 hover:bg-primary-green rounded-3xl shadow-lg"
                 >
                   新規登録
                 </button>
                 <button
-                  className="my-7 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange rounded-3xl shadow-lg"
+                  className="my-7 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange hover:text-white rounded-3xl shadow-lg"
                   onClick={signInGoogle}
                 >
                   Googleで登録
                 </button>
-                <button className="mb-7 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange rounded-3xl shadow-lg">
+                <button className="mb-7 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange hover:text-white rounded-3xl shadow-lg">
                   Twitterで登録
                 </button>
               </div>
