@@ -3,6 +3,8 @@ import Link from "next/link";
 import { ReactNode, VFC } from "react";
 import { CameraIcon } from "@heroicons/react/outline";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { Avatar } from "@mantine/core"
+
 import { auth } from "src/firebase/firebaseConfig";
 
 type Props = {
@@ -51,11 +53,7 @@ export const Header: VFC<Props> = ({ children, title = "HP by Nextjs" }) => {
                 <div>
                   <Link href="/setting">
                     <a>
-                      <img
-                        src={auth.currentUser?.photoURL!}
-                        alt="UserIcon"
-                        className="rounded-full w-9 ring-1 ring-primary-orange "
-                      />
+                      <Avatar radius="xl" alt="user icon" /> {/* auth.currentUser?.photoURL! */}
                     </a>
                   </Link>
                 </div>
