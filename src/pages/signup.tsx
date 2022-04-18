@@ -1,14 +1,23 @@
-import React, { useState } from "react";
-import { signInWithPopup } from "firebase/auth";
+import React, { useEffect, useState } from "react";
+import { onAuthStateChanged, signInWithPopup } from "firebase/auth";
+import { useRouter } from "next/router";
+import { collection, addDoc, query, getDocs } from "firebase/firestore";
 
 import { Header } from "src/components/Layout/Header";
-import { auth, provider, singupUserWithEmailAndPassword } from "src/firebase/firebaseConfig";
+import {
+  auth,
+  db,
+  provider,
+  singupUserWithEmailAndPassword,
+} from "src/firebase/firebaseConfig";
 import Link from "next/link";
+import { Divider } from "@mantine/core";
 
 const Signup: React.FC = () => {
-  const [user, setUser] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const signInGoogle = async () => {
     await signInWithPopup(auth, provider).catch((err) => alert(err.message));
@@ -16,10 +25,20 @@ const Signup: React.FC = () => {
 
   const signUp = async (e: any) => {
     e.preventDefault();
-    const user = await singupUserWithEmailAndPassword(email, password);
-    console.log(user);
-    
+    const username = await singupUserWithEmailAndPassword(email, password);
+    await addDoc(collection(db, "posts"), {
+      userName: username,
+    });
+    console.log(username);
   };
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user !== null) {
+        router.push("/home");
+      }
+    });
+  }, [signUp, signInGoogle]);
 
   return (
     <>
@@ -49,23 +68,23 @@ const Signup: React.FC = () => {
                 Login
               </p>
               <Link href="/login">
-                <button className="my-7 mx-auto w-96 h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange rounded-3xl hidden lg:block shadow-lg ">
+                <button className="my-7 mx-auto w-96 h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange hover:text-white rounded-3xl hidden lg:block shadow-lg ">
                   ログイン
                 </button>
               </Link>
             </div>
           </div>
-          <div className="mx-auto max-w-sm bg-white rounded-r-3xl sm:max-w-md md:max-w-lg lg:w-1/2">
+          <div className="mx-auto max-w-sm bg-white rounded-3xl lg:rounded-l-none sm:max-w-md md:max-w-lg lg:w-1/2">
             <h1 className="pt-7 text-4xl text-center text-primary-orange font-bold">
               SignUp
             </h1>
-            <form className="pt-8" onSubmit={signUp}>
-              <div className="mx-8">
+            <div className="mx-8">
+              <form className="pt-8" onSubmit={signUp}>
                 <p className="my-5 text-2xl">ユーザー名</p>
                 <input
                   type="text"
-                  value={user}
-                  onChange={(e) => setUser(e.target.value)}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="w-full h-10 rounded-md border-2 border-primary-orange hover:border-primary-thinOrange focus:outline-primary-orange px-2"
                 />
                 <p className="my-5 text-2xl">メールアドレス</p>
@@ -84,21 +103,27 @@ const Signup: React.FC = () => {
                 />
                 <button
                   onSubmit={signUp}
-                  className="my-7 w-full h-12 text-2xl text-primary-orange bg-primary-green hover:bg-primary-darkGreen rounded-3xl shadow-lg"
+                  className="my-7 w-full h-12 text-2xl text-primary-orange bg-teal-600 hover:bg-primary-green rounded-3xl shadow-lg"
                 >
                   新規登録
                 </button>
                 <button
-                  className="my-7 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange rounded-3xl shadow-lg"
+                  className="my-7 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange hover:text-white rounded-3xl shadow-lg"
                   onClick={signInGoogle}
                 >
                   Googleで登録
                 </button>
-                <button className="mb-7 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange rounded-3xl shadow-lg">
+                <button className="mb-7 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange hover:text-white rounded-3xl shadow-lg">
                   Twitterで登録
                 </button>
-              </div>
-            </form>
+              </form>
+              <Divider my="xs" size={3} className="lg:hidden" />
+              <Link href="/login">
+                <button className="mb-8 mt-4 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange hover:text-white rounded-3xl shadow-lg lg:hidden ">
+                  ログイン
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
       </Header>

@@ -1,27 +1,44 @@
-import React, { useState } from "react";
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import React, { useEffect, useState } from "react";
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 
 import { Header } from "src/components/Layout/Header";
-import {
-  auth,
-  signinWithEmailAndPassword,
-  provider,
-} from "src/firebase/firebaseConfig";
+import { auth, provider } from "src/firebase/firebaseConfig";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { Divider } from "@mantine/core";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const signInGoogle = async () => {
     await signInWithPopup(auth, provider).catch((err) => alert(err.message));
   };
 
-  const logIn = async (e: any) => {
+  const onLogin = async (e: any) => {
     e.preventDefault();
-    const user = await signinWithEmailAndPassword(email, password);
-    console.log(user);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      const user = auth.currentUser;
+      console.log(user);
+      alert("ログインしました");
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user !== null) {
+        router.push("/home");
+      }
+    });
+  }, []);
 
   return (
     <>
@@ -45,12 +62,12 @@ const Login: React.FC = () => {
         </div>
 
         <div className="lg:max-w-5xl mx-auto lg:flex my-28 lg:my-28 drop-shadow-xl ">
-          <div className="mx-auto max-w-sm bg-white rounded-l-3xl sm:max-w-md md:max-w-lg lg:w-1/2">
+          <div className="mx-auto max-w-sm bg-white rounded-3xl lg:rounded-r-none sm:max-w-md md:max-w-lg lg:w-1/2">
             <h1 className="pt-7 text-4xl text-center text-primary-orange font-bold">
               LogIn
             </h1>
-            <form className="pt-8" onSubmit={logIn}>
-              <div className="mx-8">
+            <div className="mx-8">
+              <form className="pt-8" onSubmit={onLogin}>
                 <p className="my-5 text-2xl">メールアドレス</p>
                 <input
                   type="text"
@@ -66,7 +83,7 @@ const Login: React.FC = () => {
                   className="w-full h-10 rounded-md border-2 border-primary-orange hover:border-primary-thinOrange focus:outline-primary-brown px-2"
                 />
                 <button
-                  onSubmit={logIn}
+                  onSubmit={onLogin}
                   className="my-7 w-full h-12 text-2xl text-primary-orange bg-teal-600 hover:bg-primary-green rounded-3xl shadow-lg"
                 >
                   ログイン
@@ -80,8 +97,14 @@ const Login: React.FC = () => {
                 <button className="mb-7 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange hover:text-white rounded-3xl shadow-lg">
                   Twitterでログイン
                 </button>
-              </div>
-            </form>
+              </form>
+              <Divider my="xs" size={3} className="lg:hidden" />
+              <Link href="/signup">
+                <button className="mb-8 mt-4 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange hover:text-white rounded-3xl shadow-lg lg:hidden ">
+                  新規登録
+                </button>
+              </Link>
+            </div>
           </div>
           <div className="mx-auto max-w-sm lg:bg-primary-green rounded-r-3xl sm:max-w-md md:max-w-lg lg:w-1/2 ">
             <div className="lg:my-64">
