@@ -3,10 +3,15 @@ import { onAuthStateChanged, signInWithPopup } from "firebase/auth";
 import { useRouter } from "next/router";
 import { collection, addDoc, query, getDocs } from "firebase/firestore";
 
-
 import { Header } from "src/components/Layout/Header";
-import { auth, db, provider, singupUserWithEmailAndPassword } from "src/firebase/firebaseConfig";
+import {
+  auth,
+  db,
+  provider,
+  singupUserWithEmailAndPassword,
+} from "src/firebase/firebaseConfig";
 import Link from "next/link";
+import { Divider } from "@mantine/core";
 
 const Signup: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -20,12 +25,11 @@ const Signup: React.FC = () => {
 
   const signUp = async (e: any) => {
     e.preventDefault();
-    const user = await singupUserWithEmailAndPassword(email, password);
+    const username = await singupUserWithEmailAndPassword(email, password);
     await addDoc(collection(db, "posts"), {
       userName: username,
-    })
+    });
     console.log(username);
-    
   };
 
   useEffect(() => {
@@ -70,12 +74,12 @@ const Signup: React.FC = () => {
               </Link>
             </div>
           </div>
-          <div className="mx-auto max-w-sm bg-white rounded-r-3xl sm:max-w-md md:max-w-lg lg:w-1/2">
+          <div className="mx-auto max-w-sm bg-white rounded-3xl lg:rounded-l-none sm:max-w-md md:max-w-lg lg:w-1/2">
             <h1 className="pt-7 text-4xl text-center text-primary-orange font-bold">
               SignUp
             </h1>
-            <form className="pt-8" onSubmit={signUp}>
-              <div className="mx-8">
+            <div className="mx-8">
+              <form className="pt-8" onSubmit={signUp}>
                 <p className="my-5 text-2xl">ユーザー名</p>
                 <input
                   type="text"
@@ -112,8 +116,14 @@ const Signup: React.FC = () => {
                 <button className="mb-7 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange hover:text-white rounded-3xl shadow-lg">
                   Twitterで登録
                 </button>
-              </div>
-            </form>
+              </form>
+              <Divider my="xs" size={3} className="lg:hidden" />
+              <Link href="/login">
+                <button className="mb-8 mt-4 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange hover:text-white rounded-3xl shadow-lg lg:hidden ">
+                  ログイン
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
       </Header>
