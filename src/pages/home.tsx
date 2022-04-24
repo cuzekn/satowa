@@ -2,28 +2,170 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { addDoc, collection, getDocs, query } from "firebase/firestore";
 
 import { Footer } from "src/components/Layout/Footer";
 import { Header } from "src/components/Layout/Header";
+import { db, storage } from "src/firebase/firebaseConfig";
+import { getDownloadURL, listAll, ref } from "firebase/storage";
 
-const Home: NextPage = () => {
-  const pets = [
-    "/images/maro.jpg",
-    "/images/mugi.jpg",
-    "/images/rantarou.jpg",
-    "/images/rintarou.jpg",
-    "/images/yukiti.jpg",
-    "/images/sou.jpg",
-    "/images/kotarou.jpg",
-    "/images/sena.jpg",
-  ];
-  // const pets = ["maro", "mugi", "rantarou", "rintarou", "yukiti", "sou", "kotarou" ]
-  // const pet = pets.map((img) => {
-  //   return (
-  //     `/images/${img}.jpg`
-  //   )
-  // })
-  // console.log(pet)
+export type Pet = {
+  id: string;
+  petimage: string;
+  petname: string;
+  userName: string;
+};
+
+export async function getPets(): Promise<Pet[]> {
+  const pets = new Array<Pet>();
+  const petsSnapshot = await getDocs(collection(db, "/pets"));
+  const listRef = ref(storage, "images/");
+
+  petsSnapshot.forEach((doc) => {
+    const pet = doc.data() as Pet;
+    pets.push({ ...pet, id: doc.id });
+  });
+
+  listAll(listRef)
+    .then((res) => {
+      res.items.forEach((itemRef) => {
+        const starsRef = ref(storage, itemRef.fullPath);
+        getDownloadURL(starsRef).then((url) => {
+          pets.forEach((pet) => {
+            if (pet.petimage === itemRef.name) {
+              pet.petimage = url;
+            }
+          });
+        });
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+  return pets;
+}
+
+export type UsePetsOutput = {
+  isLoading: boolean;
+  pets: Pet[];
+};
+
+const DEFAULT_OUTPUT: UsePetsOutput = {
+  isLoading: true,
+  pets: [],
+};
+
+export function usePets(): UsePetsOutput {
+  const [output, setOutput] = useState(DEFAULT_OUTPUT);
+
+  useEffect(() => {
+    void (async () => {
+      const pets = await getPets();
+      setOutput({ isLoading: false, pets });
+    })();
+  }, []);
+
+  return output;
+}
+
+const Home = () => {
+  const [fromId, setFromId] = useState("");
+  const [petName, setPetName] = useState("");
+  const [petImage, setPetImage] = useState<string[]>();
+
+  const listpet = () => {
+    const listRef = ref(storage, "images/");
+    listAll(listRef)
+      .then((res) => {
+        res.items.forEach((itemRef) => {
+          const starsRef = ref(storage, itemRef.fullPath);
+          getDownloadURL(starsRef)
+            .then((url) => {
+              if (petImage === undefined) {
+                setPetImage([url]);
+              } else {
+                setPetImage([...petImage, url]);
+              }
+            })
+            .catch((error) => {
+              <p>画像がありません</p>;
+            });
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // useEffect(() => {
+  //   const listRef = ref(storage, "images/");
+  //   listAll(listRef)
+  //     .then((res) => {
+  //       res.items.forEach((itemRef) => {
+  //         const starsRef = ref(storage, `images/maro.jpg`); //`images/${itemRef.name}`);
+  //         getDownloadURL(starsRef)
+  //           .then((url) => {
+  //             console.log(url);
+  //             setPetImage(url);
+  //           })
+  //           .catch((error) => {
+  //             <p>画像がありません</p>;
+  //           });
+  //       });
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }, []);
+
+  // const { isLoading, pets } = usePets();
+  // if (isLoading) return <p>Loading...</p>;
+
+  const fetch = async () => {
+    const docRef = await addDoc(collection(db, "cities"), {
+      name: "Tokyo",
+      country: "Japan",
+    });
+    console.log("Document written with ID: ", docRef.id, docRef);
+    setFromId(docRef.id);
+  };
+
+  const onquery = async () => {
+    const q = query(collection(db, "pets"));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // console.log(doc.id, " => ", doc.data());
+      console.log(doc.data().petname);
+      setPetName(doc.data().petname);
+    });
+
+    const listRef = ref(storage, "images/");
+    listAll(listRef)
+      .then((res) => {
+        res.items.forEach((itemRef) => {
+          const starsRef = ref(storage, itemRef.fullPath);
+          getDownloadURL(starsRef)
+            .then((url) => {
+              if (petImage === undefined) {
+                setPetImage([url]);
+                console.log(setPetImage);
+                
+              } else {
+                setPetImage([...petImage, url]);
+                console.log(setPetImage);
+              }
+            })
+            .catch(() => {
+              <p>画像がありません</p>;
+            });
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <>
@@ -46,6 +188,8 @@ const Home: NextPage = () => {
             />
           </div>
         </div>
+        <button onClick={onquery}>petname</button>
+        <p>{petName}</p>
 
         <div className="m-auto">
           <div>
@@ -55,26 +199,27 @@ const Home: NextPage = () => {
           </div>
           <div className="text-center">
             <div className="grid grid-cols-2 gap-y-5 justify-items-center sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
-              {pets.map((img) => {
-                return (
-                  <div
-                    key={img}
-                    className="p-4 w-40 text-center bg-green-800 rounded-lg shadow-xl"
-                  >
-                    <div className="flex justify-center">
-                      <Image
-                        className="rounded-full object-none"
-                        src={img}
-                        width={128}
-                        height={128}
-                        alt="pet"
-                      />
-                    </div>
-                    <div className="py-2 text-white">Name</div>
-                    <button className="text-orange-600">Tap</button>
+              <div className="p-4 w-40 mx-10 my-3 text-center bg-green-800 rounded-lg shadow-xl">
+                <div className="bg-white h-32 w-32 rounded-full">
+                  <img src={petImage} className="h-32 w-32 rounded-full" />
+                </div>
+                <div className="py-2 text-white">{petName}</div>
+                <button className="text-orange-600">Tap</button>
+              </div>
+              {/* {pets.map((pet) => (
+                <div
+                  className="p-4 w-40 mx-10 my-3 text-center bg-green-800 rounded-lg shadow-xl"
+                  key={pet.id}
+                >
+                  <div className="bg-white h-32 w-32 rounded-full">
+                    <img src={pet.petimage} className="h-32 w-32 rounded-full" />
                   </div>
-                );
-              })}
+                  <div className="py-2 text-white" key={pet.id}>
+                    {pet.petname}
+                  </div>
+                  <button className="text-orange-600">Tap</button>
+                </div>
+              ))} */}
             </div>
             <div className="m-4">
               <Link href="/album">
@@ -91,28 +236,7 @@ const Home: NextPage = () => {
             </div>
           </div>
           <div className="text-center">
-            <div className="grid grid-cols-2 gap-y-5 justify-items-center sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
-              {pets.map((img) => {
-                return (
-                  <div
-                    key={img}
-                    className="p-4 w-40 text-center bg-green-800 rounded-lg shadow-xl"
-                  >
-                    <div className="flex justify-center">
-                      <Image
-                        className="rounded-full object-none"
-                        src={img}
-                        width={128}
-                        height={128}
-                        alt="pet"
-                      />
-                    </div>
-                    <div className="py-2 text-white">Name</div>
-                    <button className="text-orange-600">Tap</button>
-                  </div>
-                );
-              })}
-            </div>
+            <div className="grid grid-cols-2 gap-y-5 justify-items-center sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7"></div>
             <div className="m-4">
               <Link href="/album">
                 <a className="text-3xl text-orange-500">もっと見る</a>
@@ -221,7 +345,6 @@ const Home: NextPage = () => {
             </div>
           </div>
         </div> */}
-
       </main>
       <Footer />
     </>
