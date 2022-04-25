@@ -229,8 +229,6 @@ const Home = () => {
       </Header>
 
       <main>
-        
-
         {/* <div className="flex justify-items-center lg:mx-auto">
           <div className="lg:mx-auto">
             <Image
@@ -244,16 +242,21 @@ const Home = () => {
         </div> */}
         <button onClick={onquery}>petname</button>
         {pets.map((post) => (
-          <div key={post.id} className="grid grid-cols-2 gap-y-5 justify-items-center sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
-            <div className="p-4 w-40 mx-10 my-3 text-center bg-green-800 rounded-lg shadow-xl">
-              <div className="bg-white h-32 w-32 rounded-full">
-                {/* <img src={post.petImage} className="h-32 w-32 rounded-full" /> */}
+          <ul>
+            <li
+              key={post.id}
+              className="grid grid-cols-2 gap-y-5 justify-items-center sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7"
+            >
+              <div className="p-4 w-40 mx-10 my-3 text-center bg-green-800 rounded-lg shadow-xl">
+                <div className="bg-white h-32 w-32 rounded-full">
+                  {/* <img src={post.petImage} className="h-32 w-32 rounded-full" /> */}
+                </div>
+                <div className="py-2 text-white">{post.petname}</div>
+                <button className="text-orange-600">Tap</button>
               </div>
-              <div className="py-2 text-white">{post.petname}</div>
-              <button className="text-orange-600">Tap</button>
-            </div>
-            {console.log(post.petname)}
-          </div>
+              {console.log(post.petname)}
+            </li>
+          </ul>
         ))}
 
         <div className="m-auto">
