@@ -39,6 +39,18 @@ const Addpet = () => {
 
   // }
 
+  const getURL = async(e:any) => {
+    e.preventDefault();
+    const file = e.target.files[0];
+    const storageRef = ref(storage, "images/" + file.name);
+    uploadBytes(storageRef, file).then((snapshot) => {
+      console.log(file);
+    });
+    await addDoc(collection(db, "pets"), {
+      petImage: storageRef
+    })
+  };
+
   const handlePreviewFile = (e) => {
     const { files } = e.target;
     setPetImagePreview(window.URL.createObjectURL(files[0]));
@@ -55,10 +67,7 @@ const Addpet = () => {
       petname: petname,
       petImage: petImage,
     });
-    uploadBytesResumable(
-      ref(storage, `images/${petImage.name}`),
-      petImage
-    );
+    uploadBytesResumable(ref(storage, `images/${petImage.name}`), petImage);
 
     // const uploadPetImg = uploadBytesResumable(
     //   ref(storage, `images/` + petImage.name),
@@ -114,6 +123,13 @@ const Addpet = () => {
 
   return (
     <Header>
+      <input
+        id="image"
+        type="file"
+        accept=".jpg, .jpeg, .png"
+        onChange={getURL}
+        required
+      />
       <div className="my-6 w-96 bg-white rounded-xl">
         <form action="" onSubmit={addPetProfile}>
           <label htmlFor="name">ペットの名前</label>
