@@ -96,6 +96,7 @@ const Home: NextPage = () => {
             />
           </div>
         </div>
+        
         <div className="flex justify-center">
           <div className="my-6 w-96 bg-white rounded-xl">
             <label htmlFor="name">ペットの名前</label>
@@ -131,7 +132,8 @@ const Home: NextPage = () => {
             </label>
             <button
               onClick={addImage}
-              className="mt-4 mb-8 w-full h-12 text-2xl hover:text-white bg-primary-thinOrange hover:bg-primary-orange rounded-3xl shadow-lg"
+              disabled={!petName || !petImage}
+              className="mt-4 mb-8 w-full h-12 text-2xl disabled:bg-slate-300 hover:text-white bg-primary-thinOrange hover:bg-primary-orange rounded-3xl shadow-lg"
             >
               作成
             </button>
