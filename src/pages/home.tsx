@@ -10,105 +10,116 @@ import { Header } from "src/components/Layout/Header";
 import { db, storage } from "src/firebase/firebaseConfig";
 import { getDownloadURL, listAll, ref } from "firebase/storage";
 
-export type Pet = {
-  id: string;
-  petimage: string;
-  petname: string;
-  userName: string;
-};
+// export type Pet = {
+//   id: string;
+//   petimage: string;
+//   petname: string;
+//   userName: string;
+// };
 
-export async function getPets(): Promise<Pet[]> {
-  const pets = new Array<Pet>();
-  const petsSnapshot = await getDocs(collection(db, "/pets"));
-  const listRef = ref(storage, "images/");
+// export async function getPets(): Promise<Pet[]> {
+//   const pets = new Array<Pet>();
+//   const petsSnapshot = await getDocs(collection(db, "/pets"));
+//   const listRef = ref(storage, "images/");
 
-  petsSnapshot.forEach((doc) => {
-    const pet = doc.data() as Pet;
-    pets.push({ ...pet, id: doc.id });
-  });
+//   petsSnapshot.forEach((doc) => {
+//     const pet = doc.data() as Pet;
+//     pets.push({ ...pet, id: doc.id });
+//   });
 
-  listAll(listRef)
-    .then((res) => {
-      res.items.forEach((itemRef) => {
-        const starsRef = ref(storage, itemRef.fullPath);
-        getDownloadURL(starsRef).then((url) => {
-          pets.forEach((pet) => {
-            if (pet.petimage === itemRef.name) {
-              pet.petimage = url;
-            }
-          });
-        });
-      });
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+//   listAll(listRef)
+//     .then((res) => {
+//       res.items.forEach((itemRef) => {
+//         const starsRef = ref(storage, itemRef.fullPath);
+//         getDownloadURL(starsRef).then((url) => {
+//           pets.forEach((pet) => {
+//             if (pet.petimage === itemRef.name) {
+//               pet.petimage = url;
+//             }
+//           });
+//         });
+//       });
+//     })
+//     .catch((error) => {
+//       console.log(error);
+//     });
 
-  return pets;
-}
+//   return pets;
+// }
 
-export type UsePetsOutput = {
-  isLoading: boolean;
-  pets: Pet[];
-};
+// export type UsePetsOutput = {
+//   isLoading: boolean;
+//   pets: Pet[];
+// };
 
-const DEFAULT_OUTPUT: UsePetsOutput = {
-  isLoading: true,
-  pets: [],
-};
+// const DEFAULT_OUTPUT: UsePetsOutput = {
+//   isLoading: true,
+//   pets: [],
+// };
 
-export function usePets(): UsePetsOutput {
-  const [output, setOutput] = useState(DEFAULT_OUTPUT);
+// export function usePets(): UsePetsOutput {
+//   const [output, setOutput] = useState(DEFAULT_OUTPUT);
 
-  useEffect(() => {
-    void (async () => {
-      const pets = await getPets();
-      setOutput({ isLoading: false, pets });
-    })();
-  }, []);
+//   useEffect(() => {
+//     void (async () => {
+//       const pets = await getPets();
+//       setOutput({ isLoading: false, pets });
+//     })();
+//   }, []);
 
-  return output;
-}
+//   return output;
+// }
+
+// export async function getPets(): Promise<Pet[]> {
+//   const pets = new Array<Pet>();
+//   const petsSnapshot = await getDocs(collection(db, "/pets"));
+//   const listRef = ref(storage, "images/");
+
+//   petsSnapshot.forEach((doc) => {
+//     const pet = doc.data() as Pet;
+//     pets.push({ ...pet, id: doc.id});
+//     console.log(pet.petname);
+//   });
+
+//   listAll(listRef)
+//     .then((res) => {
+//       res.items.forEach((itemRef) => {
+//         const starsRef = ref(storage, itemRef.fullPath);
+//         getDownloadURL(starsRef).then((url) => {
+//           pets.forEach((pet) => {
+//             if (pet.petimage === itemRef.name) {
+//               pet.petimage = url;
+//             }
+//           });
+//         });
+//       });
+//     })
+//     .catch((error) => {
+//       console.log(error);
+//     });
+
+//   return pets;
+
+// }
 
 const Home = () => {
   const [fromId, setFromId] = useState("");
-  const [petName, setPetName] = useState("");
+  const [petName, setPetName] = useState<string[]>();
   const [petImage, setPetImage] = useState<string[]>();
 
-  const listpet = () => {
-    const listRef = ref(storage, "images/");
-    listAll(listRef)
-      .then((res) => {
-        res.items.forEach((itemRef) => {
-          const starsRef = ref(storage, itemRef.fullPath);
-          getDownloadURL(starsRef)
-            .then((url) => {
-              if (petImage === undefined) {
-                setPetImage([url]);
-              } else {
-                setPetImage([...petImage, url]);
-              }
-            })
-            .catch((error) => {
-              <p>画像がありません</p>;
-            });
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  // useEffect(() => {
+  // const listpet = () => {
   //   const listRef = ref(storage, "images/");
   //   listAll(listRef)
   //     .then((res) => {
   //       res.items.forEach((itemRef) => {
-  //         const starsRef = ref(storage, `images/maro.jpg`); //`images/${itemRef.name}`);
+  //         const starsRef = ref(storage, itemRef.fullPath);
   //         getDownloadURL(starsRef)
   //           .then((url) => {
-  //             console.log(url);
-  //             setPetImage(url);
+  //             if (petImage === undefined) {
+  //               setPetImage([url]);
+  //             } else {
+  //               setPetImage([...petImage, url]);
+  //             }
   //           })
   //           .catch((error) => {
   //             <p>画像がありません</p>;
@@ -118,53 +129,94 @@ const Home = () => {
   //     .catch((error) => {
   //       console.log(error);
   //     });
+  // };
+
+  // useEffect(() => {
+  //   const petAll = async () => {
+  //     const q = query(collection(db, "pets"));
+  //     const querySnapshot = await getDocs(q);
+  //     querySnapshot.forEach((doc) => {
+  //       // console.log(doc.id, " => ", doc.data());
+  //       console.log(doc.data().petname);
+  //       setPetName(doc.data().petname);
+  //     });
+
+  //     const listRef = ref(storage, "images/");
+  //     listAll(listRef)
+  //       .then((res) => {
+  //         res.items.forEach((itemRef) => {
+  //           const starsRef = ref(storage, `images/${itemRef.name}`);
+  //           getDownloadURL(starsRef)
+  //             .then((url) => {
+  //               console.log(url);
+  //               setPetImage(url);
+  //             })
+  //             .catch((error) => {
+  //               <p>画像がありません</p>;
+  //             });
+  //         });
+  //       })
+  //       .catch((error) => {
+  //         console.log(error);
+  //       });
+  //   }
+  //   return petAll();
   // }, []);
 
   // const { isLoading, pets } = usePets();
   // if (isLoading) return <p>Loading...</p>;
 
-  const fetch = async () => {
-    const docRef = await addDoc(collection(db, "cities"), {
-      name: "Tokyo",
-      country: "Japan",
-    });
-    console.log("Document written with ID: ", docRef.id, docRef);
-    setFromId(docRef.id);
-  };
+  // const fetch = async () => {
+  //   const docRef = await addDoc(collection(db, "cities"), {
+  //     name: "Tokyo",
+  //     country: "Japan",
+  //   });
+  //   console.log("Document written with ID: ", docRef.id, docRef);
+  //   setFromId(docRef.id);
+  // };
+
+  const [pets, setPets] = useState([
+    {
+      id: "",
+      petname: "",
+      petImage: "",
+    },
+  ]);
 
   const onquery = async () => {
     const q = query(collection(db, "pets"));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      // console.log(doc.id, " => ", doc.data());
-      console.log(doc.data().petname);
-      setPetName(doc.data().petname);
+      console.log(doc.id, " => ", doc.data());
+      setPets([
+        ...pets,
+        {
+          id: doc.id,
+          petname: doc.data().petname,
+          petImage: doc.data().petimage,
+        },
+      ]);
     });
 
-    const listRef = ref(storage, "images/");
-    listAll(listRef)
-      .then((res) => {
-        res.items.forEach((itemRef) => {
-          const starsRef = ref(storage, itemRef.fullPath);
-          getDownloadURL(starsRef)
-            .then((url) => {
-              if (petImage === undefined) {
-                setPetImage([url]);
-                console.log(setPetImage);
-                
-              } else {
-                setPetImage([...petImage, url]);
-                console.log(setPetImage);
-              }
-            })
-            .catch(() => {
-              <p>画像がありません</p>;
-            });
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    // const listRef = ref(storage, "images/");
+    // listAll(listRef)
+    //   .then((res) => {
+    //     res.items.forEach((itemRef) => {
+    //       const starsRef = ref(storage, `images/${itemRef.name}`);
+    //       getDownloadURL(starsRef)
+    //       .then((url) => {
+    //         console.log(url);
+    //         const newPets = [...pets];
+    //         console.log(newPets);
+    //       })
+    //         .catch((error) => {
+    //           console.log(error);
+    //         });
+    //     });
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
   };
 
   return (
@@ -177,7 +229,9 @@ const Home = () => {
       </Header>
 
       <main>
-        <div className="flex justify-items-center lg:mx-auto">
+        
+
+        {/* <div className="flex justify-items-center lg:mx-auto">
           <div className="lg:mx-auto">
             <Image
               src="/images/dog.jpg"
@@ -187,9 +241,20 @@ const Home = () => {
               objectFit="contain"
             />
           </div>
-        </div>
+        </div> */}
         <button onClick={onquery}>petname</button>
-        <p>{petName}</p>
+        {pets.map((post) => (
+          <div key={post.id} className="grid grid-cols-2 gap-y-5 justify-items-center sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
+            <div className="p-4 w-40 mx-10 my-3 text-center bg-green-800 rounded-lg shadow-xl">
+              <div className="bg-white h-32 w-32 rounded-full">
+                {/* <img src={post.petImage} className="h-32 w-32 rounded-full" /> */}
+              </div>
+              <div className="py-2 text-white">{post.petname}</div>
+              <button className="text-orange-600">Tap</button>
+            </div>
+            {console.log(post.petname)}
+          </div>
+        ))}
 
         <div className="m-auto">
           <div>
@@ -198,14 +263,15 @@ const Home = () => {
             </div>
           </div>
           <div className="text-center">
+            {}
             <div className="grid grid-cols-2 gap-y-5 justify-items-center sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
-              <div className="p-4 w-40 mx-10 my-3 text-center bg-green-800 rounded-lg shadow-xl">
+              {/* <div className="p-4 w-40 mx-10 my-3 text-center bg-green-800 rounded-lg shadow-xl">
                 <div className="bg-white h-32 w-32 rounded-full">
                   <img src={petImage} className="h-32 w-32 rounded-full" />
                 </div>
                 <div className="py-2 text-white">{petName}</div>
                 <button className="text-orange-600">Tap</button>
-              </div>
+              </div> */}
               {/* {pets.map((pet) => (
                 <div
                   className="p-4 w-40 mx-10 my-3 text-center bg-green-800 rounded-lg shadow-xl"
