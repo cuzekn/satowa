@@ -21,7 +21,7 @@ import {
 const Home: NextPage = () => {
   const [petName, setPetName] = useState("");
   const [petImage, setPetImage] = useState<File | null>(null);
-  const [petImagePreview, setPetImagePreview] = useState<File | null | string>(null);
+  const [petImagePreview, setPetImagePreview] = useState<string | File | undefined>(undefined);
 
   const [petProfile, setPetProfile] = useState([
     {
@@ -72,7 +72,7 @@ const Home: NextPage = () => {
 
     setPetName("");
     setPetImage(null);
-    setPetImagePreview(null);
+    setPetImagePreview(undefined);
   };
 
   return (
@@ -149,7 +149,7 @@ const Home: NextPage = () => {
           <div className="text-center">
             <div className="grid grid-cols-2 gap-y-5 justify-items-center sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
               {petProfile.map((post) => (
-                <div className="p-4 w-40 text-center bg-green-800 rounded-lg shadow-xl">
+                <div key={post.id} className="p-4 w-40 text-center bg-green-800 rounded-lg shadow-xl">
                   <div className="flex justify-center ">
                     <img
                       src={post.petImage}
