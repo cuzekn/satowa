@@ -114,7 +114,7 @@ const Home: NextPage = () => {
               <div className="w-32 h-32 rounded-full border-2 cursor-pointer">
                 {petImagePreview ? (
                   <img
-                    src={petImagePreview}
+                    src={petImagePreview!}
                     className="rounded-full h-32 w-full object-cover"
                   />
                 ) : (
