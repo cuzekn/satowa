@@ -2,28 +2,78 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { GiHollowCat } from "react-icons/gi";
 
 import { Footer } from "src/components/Layout/Footer";
 import { Header } from "src/components/Layout/Header";
+import { db, storage } from "src/firebase/firebaseConfig";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  query,
+} from "firebase/firestore";
 
 const Home: NextPage = () => {
-  const pets = [
-    "/images/maro.jpg",
-    "/images/mugi.jpg",
-    "/images/rantarou.jpg",
-    "/images/rintarou.jpg",
-    "/images/yukiti.jpg",
-    "/images/sou.jpg",
-    "/images/kotarou.jpg",
-    "/images/sena.jpg",
-  ];
-  // const pets = ["maro", "mugi", "rantarou", "rintarou", "yukiti", "sou", "kotarou" ]
-  // const pet = pets.map((img) => {
-  //   return (
-  //     `/images/${img}.jpg`
-  //   )
-  // })
-  // console.log(pet)
+  const [petName, setPetName] = useState("");
+  const [petImage, setPetImage] = useState<File | null>(null);
+  const [petImagePreview, setPetImagePreview] = useState<File | null | string>(null);
+
+  const [petProfile, setPetProfile] = useState([
+    {
+      id: "",
+      petName: "",
+      petImage: "",
+    },
+  ]);
+
+  useEffect(() => {
+    const q = query(collection(db, "petProfile"));
+    onSnapshot(q, (snapshot) => {
+      setPetProfile(
+        snapshot.docs.map((doc) => ({
+          id: doc.id,
+          petName: doc.data().petName,
+          petImage: doc.data().petImage,
+        }))
+      );
+    });
+  }, []);
+
+  const onChangeImageHandler = async (e:any) => {
+    console.log(e.target.files[0]);
+    setPetImage(e.target.files[0]);
+    setPetImagePreview(window.URL.createObjectURL(e.target.files[0]));
+  };
+
+  const addImage = async () => {
+    let url = "";
+    if (petImage) {
+      const S =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      const N = 16;
+      const randomChar = Array.from(crypto.getRandomValues(new Uint32Array(N)))
+        .map((n) => S[n % S.length])
+        .join("");
+      const fileName = randomChar + "_" + petImage.name;
+      await uploadBytes(ref(storage, `petProfileImages/${fileName}`), petImage);
+      url = await getDownloadURL(ref(storage, `petProfileImages/${fileName}`));
+    }
+    console.log(url);
+
+    await addDoc(collection(db, "petProfile"), {
+      petName: petName,
+      petImage: url,
+    });
+
+    setPetName("");
+    setPetImage(null);
+    setPetImagePreview(null);
+  };
 
   return (
     <>
@@ -46,6 +96,49 @@ const Home: NextPage = () => {
             />
           </div>
         </div>
+        
+        <div className="flex justify-center">
+          <div className="my-6 w-96 bg-white rounded-xl">
+            <label htmlFor="name">ペットの名前</label>
+            <br />
+            <input
+              id="name"
+              type="text"
+              placeholder="ペットの名前を入力してください"
+              required
+              value={petName}
+              onChange={(e) => setPetName(e.target.value)}
+              className="px-2 w-full h-10 rounded-md border-2 border-primary-orange hover:border-primary-thinOrange focus:outline-primary-brown"
+            />
+            <label htmlFor="image">
+              <div className="w-32 h-32 rounded-full border-2 cursor-pointer">
+                {petImagePreview ? (
+                  <img
+                    src={petImagePreview}
+                    className="rounded-full h-32 w-full object-cover"
+                  />
+                ) : (
+                  <GiHollowCat size={64} className="m-auto h-32 text-center" />
+                )}
+              </div>
+              <input
+                id="image"
+                type="file"
+                accept=".jpg, .jpeg, .png"
+                onChange={onChangeImageHandler}
+                className="hidden"
+                required
+              />
+            </label>
+            <button
+              onClick={addImage}
+              disabled={!petName || !petImage}
+              className="mt-4 mb-8 w-full h-12 text-2xl disabled:bg-slate-300 hover:text-white bg-primary-thinOrange hover:bg-primary-orange rounded-3xl shadow-lg"
+            >
+              作成
+            </button>
+          </div>
+        </div>
 
         <div className="m-auto">
           <div>
@@ -55,26 +148,25 @@ const Home: NextPage = () => {
           </div>
           <div className="text-center">
             <div className="grid grid-cols-2 gap-y-5 justify-items-center sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
-              {pets.map((img) => {
-                return (
-                  <div
-                    key={img}
-                    className="p-4 w-40 text-center bg-green-800 rounded-lg shadow-xl"
-                  >
-                    <div className="flex justify-center">
-                      <Image
-                        className="rounded-full object-none"
-                        src={img}
-                        width={128}
-                        height={128}
-                        alt="pet"
-                      />
-                    </div>
-                    <div className="py-2 text-white">Name</div>
-                    <button className="text-orange-600">Tap</button>
+              {petProfile.map((post) => (
+                <div className="p-4 w-40 text-center bg-green-800 rounded-lg shadow-xl">
+                  <div className="flex justify-center ">
+                    <img
+                      src={post.petImage}
+                      alt="ペットの画像"
+                      className="rounded-full h-32 w-full object-cover"
+                    />
                   </div>
-                );
-              })}
+                  <div className="py-2 text-white">{post.petName}</div>
+                  <button className="text-orange-600">Tap</button>
+                  <br />
+                  <button
+                    onClick={(e) => deleteDoc(doc(db, "petProfile", post.id))}
+                  >
+                    delete
+                  </button>
+                </div>
+              ))}
             </div>
             <div className="m-4">
               <Link href="/album">
@@ -91,28 +183,6 @@ const Home: NextPage = () => {
             </div>
           </div>
           <div className="text-center">
-            <div className="grid grid-cols-2 gap-y-5 justify-items-center sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
-              {pets.map((img) => {
-                return (
-                  <div
-                    key={img}
-                    className="p-4 w-40 text-center bg-green-800 rounded-lg shadow-xl"
-                  >
-                    <div className="flex justify-center">
-                      <Image
-                        className="rounded-full object-none"
-                        src={img}
-                        width={128}
-                        height={128}
-                        alt="pet"
-                      />
-                    </div>
-                    <div className="py-2 text-white">Name</div>
-                    <button className="text-orange-600">Tap</button>
-                  </div>
-                );
-              })}
-            </div>
             <div className="m-4">
               <Link href="/album">
                 <a className="text-3xl text-orange-500">もっと見る</a>
@@ -221,7 +291,6 @@ const Home: NextPage = () => {
             </div>
           </div>
         </div> */}
-
       </main>
       <Footer />
     </>
