@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { onAuthStateChanged, signInWithPopup } from "firebase/auth";
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithPopup, updateProfile } from "firebase/auth";
 import { useRouter } from "next/router";
 import { collection, addDoc, query, getDocs } from "firebase/firestore";
 
@@ -8,7 +8,6 @@ import {
   auth,
   db,
   provider,
-  singupUserWithEmailAndPassword,
 } from "src/firebase/firebaseConfig";
 import Link from "next/link";
 import { Divider } from "@mantine/core";
@@ -18,6 +17,7 @@ const Signup: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const user = auth.currentUser;
 
   const signInGoogle = async () => {
     await signInWithPopup(auth, provider).catch((err) => alert(err.message));
@@ -25,11 +25,20 @@ const Signup: React.FC = () => {
 
   const signUp = async (e: any) => {
     e.preventDefault();
-    const username = await singupUserWithEmailAndPassword(email, password);
-    await addDoc(collection(db, "posts"), {
-      userName: username,
-    });
-    console.log(username);
+    try {
+      const authUser = await createUserWithEmailAndPassword(auth, email, password);  
+      alert('登録しました');
+      if (authUser.user) {
+        await updateProfile(authUser.user, {
+          displayName: username,
+          photoURL: "",
+        })
+      }
+    } catch(error) {
+      alert('登録失敗')
+      console.log(error);    
+    }
+
   };
 
   useEffect(() => {

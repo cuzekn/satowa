@@ -21,18 +21,3 @@ const db = getFirestore(app)
 const storage = getStorage(app)
 
 export { auth, provider, db, storage };
-
-export const singupUserWithEmailAndPassword = async (email: string, password: string) => {
-  const auth = getAuth();
-
-  try {
-    const user = await createUserWithEmailAndPassword(auth, email, password);
-
-    alert('登録しました');
-
-    return user;
-  } catch(error) {
-    alert('登録失敗')
-    console.log(error);    
-  }
-}
