@@ -19,7 +19,7 @@ const setting: FC = () => {
   const [username, setUsername] = useState<string | null>("");
   const [email, setEmail] = useState<string | null>("");
   const [password, setPassword] = useState<string | null>("");
-  const [userImage, setUserImage] = useState<string | File | undefined>("");
+  const [userImage, setUserImage] = useState<string | undefined>("");
   const [updataUsername, setUpdataUsername] = useState("");
   const [updataUserImage, setUpdataUserImage] = useState<File | undefined>(undefined);
   const [opened, setOpened] = useState(false);
