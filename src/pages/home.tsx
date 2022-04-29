@@ -21,7 +21,7 @@ import {
 const Home: NextPage = () => {
   const [petName, setPetName] = useState("");
   const [petImage, setPetImage] = useState<File | null>(null);
-  const [petImagePreview, setPetImagePreview] = useState<string | File | undefined>(undefined);
+  const [petImagePreview, setPetImagePreview] = useState<string | undefined>(undefined);
 
   const [petProfile, setPetProfile] = useState([
     {
