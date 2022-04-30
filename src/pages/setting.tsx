@@ -21,7 +21,12 @@ const setting: FC = () => {
   const [password, setPassword] = useState<string | null>("");
   const [userImage, setUserImage] = useState<string | undefined>("");
   const [updataUsername, setUpdataUsername] = useState("");
-  const [updataUserImage, setUpdataUserImage] = useState<File | undefined>(undefined);
+  const [updataUserImage, setUpdataUserImage] = useState<File | undefined>(
+    undefined
+  );
+  const [petImagePreview, setPetImagePreview] = useState<string | undefined>(
+    ""
+  );
   const [opened, setOpened] = useState(false);
 
   // const getUser = () => {
@@ -59,6 +64,7 @@ const setting: FC = () => {
       .catch((error) => {
         console.log(error);
       });
+    setOpened(false);
   };
 
   const editImage = async () => {
@@ -71,7 +77,10 @@ const setting: FC = () => {
         .map((n) => S[n % S.length])
         .join("");
       const fileName = randomChar + "_" + updataUserImage.name;
-      await uploadBytes(ref(storage, `userProfile/${fileName}`), updataUserImage);
+      await uploadBytes(
+        ref(storage, `userProfile/${fileName}`),
+        updataUserImage
+      );
       url = await getDownloadURL(ref(storage, `userProfile/${fileName}`));
       updateProfile(auth.currentUser!, {
         photoURL: url,
@@ -82,14 +91,17 @@ const setting: FC = () => {
         });
     }
     console.log(url);
+    setOpened(false);
   };
 
-  const onChangeImageHandler = async (e:any) => {
+  const onChangeImageHandler = async (e: any) => {
     console.log(e.target.files[0]);
     setUpdataUserImage(e.target.files[0]);
+    setPetImagePreview(window.URL.createObjectURL(e.target.files[0]));
   };
 
   useEffect(() => {
+    const user = auth.currentUser;
     if (user != null) {
       user.providerData.forEach((profile) => {
         setUsername(profile.displayName);
@@ -103,63 +115,117 @@ const setting: FC = () => {
 
   return (
     <>
-      <Header title="設定">setting</Header>
-      <button
-        className="bg-primary-green text-white p-3 rounded-lg mx-20 my-5"
-        onClick={() => {
-          signOut(auth), router.push("/home");
-        }}
-      >
-        Logout
-      </button>
-      <br />
-      <button
-        className="bg-primary-green text-white p-3 rounded-lg mx-20"
-        onClick={() => {
-          deleteUser(user!), router.push("/home");
-        }}
-      >
-        退会
-      </button>
-      <ul>
-        <li>
-          <button onClick={getUser}>getUser</button>
-        </li>
-        <li>ユーザー名</li>
-        <li className="bg-white">
-          {username} <button onClick={() => setOpened(true)}>編集</button>
-        </li>
-        <li>メールアドレス</li>
-        <li className="bg-white">{email}</li>
-        <li>アイコン</li>
-        <li>
-          {user ? (
-            <img src={userImage} alt="user icon" height={128} width={128} />
-          ) : (
-            <Avatar radius="xl" alt="user icon" />
-          )}
-        </li>
-      </ul>
-      <Modal centered opened={opened} onClose={() => setOpened(false)}>
-        <div>
-          <ul>
-            <li>変更後の名前</li>
-            <li>
-              <input
-                type="text"
-                onChange={(e) => setUpdataUsername(e.target.value)}
-              />
-            </li>
-            <li>変更後のアイコン</li>
-            <li>
-              <input type="File" onChange={onChangeImageHandler} />
-            </li>
-            <button onClick={editName}>名前の変更</button>
-            <button onClick={editImage}>画像の変更</button>
-          </ul>
+      <Header title="設定">
+        <div className="w-full">
+          <div className="m-5 max-w-xl bg-white mx-auto">
+            <h1 className="text-xl">ユーザー情報</h1>
+            <button
+              onClick={() => setOpened(true)}
+              className="py-1 px-3 rounded-3xl bg-primary-thinOrange hover:bg-primary-orange hover:text-white"
+            >
+              プロフィールを編集
+            </button>
+            <dl>
+              <dt>
+                <button onClick={getUser}>getUser</button>
+              </dt>
+              <dt>ユーザー名</dt>
+              <dd className="bg-white">{username}</dd>
+              <dt>メールアドレス</dt>
+              <dd className="bg-white">{email}</dd>
+              <dt>アイコン</dt>
+              <dd>
+                {user ? (
+                  <img
+                    src={userImage}
+                    alt="user icon"
+                    height={128}
+                    width={128}
+                    className="rounded-full"
+                  />
+                ) : (
+                  <Avatar radius="xl" alt="user icon" />
+                )}
+              </dd>
+            </dl>
+            <button
+              className="bg-primary-green text-white p-3 rounded-lg mx-20 my-5"
+              onClick={() => {
+                signOut(auth), router.push("/home");
+              }}
+            >
+              Logout
+            </button>
+            <br />
+            <button
+              className="bg-primary-green text-white p-3 rounded-lg mx-20"
+              onClick={() => {
+                deleteUser(user!), router.push("/home");
+              }}
+            >
+              退会
+            </button>
+          </div>
         </div>
-      </Modal>
 
+        <Modal centered opened={opened} onClose={() => setOpened(false)}>
+          <div>
+            <h1 className="text-xl ">プロフィールを編集</h1>
+            <ul>
+              <li>変更後の名前</li>
+              <li>
+                <input
+                  type="text"
+                  onChange={(e) => setUpdataUsername(e.target.value)}
+                  className="w-full h-10 rounded-md border-2 border-primary-orange hover:border-primary-thinOrange focus:outline-primary-orange px-2"
+                />
+              </li>
+              <button
+                onClick={editName}
+                className="my-7 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange hover:text-white rounded-3xl shadow-lg"
+              >
+                名前の変更
+              </button>
+              <li>変更後のアイコン</li>
+              <li>
+                <label htmlFor="image">
+                  <div className="w-32 h-32 rounded-full border-2 cursor-pointer">
+                    {user ? (
+                      <img
+                        src={petImagePreview}
+                        alt="user icon"
+                        height={128}
+                        width={128}
+                        className="rounded-full"
+                      />
+                    ) : (
+                      <img
+                        src={userImage}
+                        alt="user icon"
+                        height={128}
+                        width={128}
+                        className="rounded-full"
+                      />
+                    )}
+                  </div>
+                  <input
+                    id="image"
+                    type="File"
+                    onChange={onChangeImageHandler}
+                    className="hidden"
+                  />
+                </label>
+              </li>
+              <button
+                onClick={editImage}
+                className="my-7 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange hover:text-white rounded-3xl shadow-lg"
+              >
+                画像の変更
+              </button>
+            </ul>
+          </div>
+        </Modal>
+      </Header>
     </>
   );
 };
