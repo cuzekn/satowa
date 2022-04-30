@@ -44,6 +44,11 @@ export const Header: VFC<Props> = ({ children, title = "HP by Nextjs" }) => {
                   Album
                 </a>
               </Link>
+              <Link href="/photo">
+                <a className="hidden py-2 px-3 text-xl text-primary-orange hover:bg-primary-green rounded sm:block">
+                  Photo
+                </a>
+              </Link>
               <Link href="/album">
                 <a className="hidden py-2 px-3 text-xl text-primary-orange hover:bg-primary-green rounded sm:block">
                   <CameraIcon className="w-5 h-5" />
