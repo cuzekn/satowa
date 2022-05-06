@@ -20,7 +20,7 @@ import Link from "next/link";
 const photo = () => {
   const [comment, setComment] = useState("");
   const [petName, setPetName] = useState("");
-  const [petImage, setPetImage] = useState<File | null>(null);
+  const [petImage, setPetImage] = useState<string | null>(null);
   const [petImagePreview, setPetImagePreview] = useState<null | string>(null);
   const [petPhoto, setPetPhoto] = useState<File | null>(null);
   const [petAll, setPetAll] = useState([
