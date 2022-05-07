@@ -30,20 +30,30 @@ const photo = () => {
       petImage: "",
     },
   ]);
+  const [tweets, setTweets] = useState([
+    {
+      id: "",
+      petName: "",
+      petImage: "",
+      comment: "",
+      petPhoto: "",
+      timestamp: null,
+    },
+  ]);
 
-  const getPet = () => {
-    const q = query(collection(db, "petProfile"));
-    onSnapshot(q, (snapshot) => {
-      setPetAll(
-        snapshot.docs.map((doc) => ({
-          id: doc.id,
-          petName: doc.data().petName,
-          petImage: doc.data().petImage,
-        }))
-      );
-    });
-    console.log(petAll);
-  };
+  // const getPet = () => {
+  //   const q = query(collection(db, "petProfile"));
+  //   onSnapshot(q, (snapshot) => {
+  //     setPetAll(
+  //       snapshot.docs.map((doc) => ({
+  //         id: doc.id,
+  //         petName: doc.data().petName,
+  //         petImage: doc.data().petImage,
+  //       }))
+  //     );
+  //   });
+  //   console.log(petAll);
+  // };
 
   const onChangePetname = async (e: any) => {
     console.log(e.target.value);
@@ -120,37 +130,27 @@ const photo = () => {
     });
   }, []);
 
-  const [tweets, setTweets] = useState([
-    {
-      id: "",
-      petName: "",
-      petImage: "",
-      comment: "",
-      petPhoto: "",
-      timestamp: null,
-    },
-  ]);
-  const getTweets = () => {
-    const q = query(collection(db, "tweets"));
-    onSnapshot(q, (snapshot) => {
-      setTweets(
-        snapshot.docs.map((doc) => ({
-          id: doc.id,
-          petName: doc.data().petName,
-          petImage: doc.data().petImage,
-          comment: doc.data().comment,
-          petPhoto: doc.data().petPhoto,
-          timestamp: doc.data().timestamp,
-        }))
-      );
-    });
-  };
+  // const getTweets = () => {
+  //   const q = query(collection(db, "tweets"));
+  //   onSnapshot(q, (snapshot) => {
+  //     setTweets(
+  //       snapshot.docs.map((doc) => ({
+  //         id: doc.id,
+  //         petName: doc.data().petName,
+  //         petImage: doc.data().petImage,
+  //         comment: doc.data().comment,
+  //         petPhoto: doc.data().petPhoto,
+  //         timestamp: doc.data().timestamp,
+  //       }))
+  //     );
+  //   });
+  // };
 
   return (
     <Header title="写真一覧">
-      <button onClick={getPet} className="bg-gray-500 text-white p-2">
+      {/* <button onClick={getPet} className="bg-gray-500 text-white p-2">
         GetPet
-      </button>
+      </button> */}
       <form
         onSubmit={sendTweet}
         className="bg-primary-green w-96 m-10 px-8 py-2"
@@ -205,9 +205,9 @@ const photo = () => {
 
       <Divider size="md" />
 
-      <button onClick={getTweets} className="bg-gray-500 text-white p-2">
+      {/* <button onClick={getTweets} className="bg-gray-500 text-white p-2">
         getTweets
-      </button>
+      </button> */}
       <div className="flex">
         {tweets.map((pet) => (
           <div key={pet.id} className="bg-primary-green w-96 m-10">
@@ -221,12 +221,14 @@ const photo = () => {
                 />
               </div>
               <div className="mx-1">
-                <p className="text-white p-1 mt-2 mb-1">{pet.petName}</p>
+                <p className="text-white p-1 mt-2 mb-1 flex">{pet.petName}</p>
+                <p className="text-white text-xs">
+                  {new Date(pet.timestamp?.toDate()).toLocaleString()}
+                </p>
                 <p className="text-primary-brown bg-white w-64 rounded-md m-0 p-1">
                   {pet.comment}
                 </p>
               </div>
-              {/* <p>{pet.timestamp}</p> */}
             </div>
             <img
               src={pet.petPhoto}
