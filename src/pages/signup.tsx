@@ -7,12 +7,11 @@ import {
   signInWithPopup,
   updateProfile,
 } from "firebase/auth";
-import { Divider, Notification } from "@mantine/core";
-import { FiCheckCircle } from "react-icons/fi";
+import { Divider } from "@mantine/core";
 
 import { Header } from "src/components/Layout/Header";
 import { auth, db, provider } from "src/firebase/firebaseConfig";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 
 const Signup: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -53,7 +52,7 @@ const Signup: React.FC = () => {
           username: username,
           email: email,
           photoURL: "",
-        })
+        });
         console.log(authUser.user);
       }
     } catch (error) {
