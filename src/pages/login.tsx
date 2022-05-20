@@ -20,7 +20,7 @@ const Login: React.FC = () => {
     await signInWithPopup(auth, provider).catch((err) => alert(err.message));
   };
 
-  const onLogin = async (e: any) => {
+  const emailLogin = async (e: any) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
@@ -67,7 +67,7 @@ const Login: React.FC = () => {
               LogIn
             </h1>
             <div className="mx-8">
-              <form className="pt-8" onSubmit={onLogin}>
+              <form className="pt-8" onSubmit={emailLogin}>
                 <p className="my-5 text-2xl">メールアドレス</p>
                 <input
                   type="text"
@@ -83,7 +83,7 @@ const Login: React.FC = () => {
                   className="w-full h-10 rounded-md border-2 border-primary-orange hover:border-primary-thinOrange focus:outline-primary-brown px-2"
                 />
                 <button
-                  onSubmit={onLogin}
+                  onSubmit={emailLogin}
                   className="my-7 w-full h-12 text-2xl text-primary-orange bg-teal-600 hover:bg-primary-green rounded-3xl shadow-lg"
                 >
                   ログイン
