@@ -147,6 +147,12 @@ const Signup: React.FC = () => {
                   Twitterで登録
                 </button>
               </form>
+              <Divider my="xs" size={3} className="lg:hidden" />
+              <Link href="/login">
+                <button className="mb-8 mt-4 h-12 w-full rounded-3xl bg-primary-thinOrange text-2xl shadow-lg hover:bg-primary-orange hover:text-white lg:hidden ">
+                  ログイン
+                </button>
+              </Link>
             </div>
           </div>
         </div>
