@@ -13,11 +13,13 @@ import { Header } from "src/components/Layout/Header";
 import { auth, db, provider } from "src/firebase/firebaseConfig";
 import { doc, setDoc } from "firebase/firestore";
 
+
 const Signup: React.FC = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const user = auth.currentUser;
 
   const signInGoogle = async () => {
     await signInWithPopup(auth, provider)
@@ -105,6 +107,7 @@ const Signup: React.FC = () => {
           </div>
           <div className="mx-auto max-w-sm rounded-3xl bg-white sm:max-w-md md:max-w-lg lg:w-1/2 lg:rounded-l-none">
             <h1 className="pt-7 text-center text-4xl font-bold text-primary-orange">
+
               SignUp
             </h1>
             <div className="mx-8">
@@ -149,6 +152,7 @@ const Signup: React.FC = () => {
               <Divider my="xs" size={3} className="lg:hidden" />
               <Link href="/login">
                 <button className="mb-8 mt-4 h-12 w-full rounded-3xl bg-primary-thinOrange text-2xl shadow-lg hover:bg-primary-orange hover:text-white lg:hidden ">
+
                   ログイン
                 </button>
               </Link>

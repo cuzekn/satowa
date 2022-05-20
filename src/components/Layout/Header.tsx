@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ReactNode, VFC } from "react";
 import { CameraIcon } from "@heroicons/react/outline";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { Avatar } from "@mantine/core"
+import { Avatar, Divider, Menu } from "@mantine/core";
 
 import { auth } from "src/firebase/firebaseConfig";
 
@@ -44,7 +44,7 @@ export const Header: VFC<Props> = ({ children, title = "HP by Nextjs" }) => {
                   Album
                 </a>
               </Link>
-              <Link href="/addphoto">
+              <Link href="/album">
                 <a className="hidden py-2 px-3 text-xl text-primary-orange hover:bg-primary-green rounded sm:block">
                   <CameraIcon className="w-5 h-5" />
                 </a>
@@ -53,17 +53,37 @@ export const Header: VFC<Props> = ({ children, title = "HP by Nextjs" }) => {
                 <div>
                   <Link href="/setting">
                     <a>
-                      <Avatar radius="xl" alt="user icon" /> {/* auth.currentUser?.photoURL! */}
+                      <Avatar radius="xl" alt="user icon" />
+                      {/* auth.currentUser?.photoURL! */}
                     </a>
                   </Link>
                 </div>
               ) : (
                 <>
-                <Link href="/login">
-                  <a className="hidden py-2 px-3 text-xl text-primary-orange hover:bg-primary-green rounded sm:block">Login</a>
-                </Link>
+                  <Link href="/login">
+                    <a className="hidden py-2 px-3 text-xl text-primary-orange hover:bg-primary-green rounded sm:block">
+                      Login
+                    </a>
+                  </Link>
                 </>
               )}
+              <Menu className="mx-5 p-1 bg-white rounded-full sm:hidden">
+                <Menu.Item component="a" href="/about">
+                  About
+                </Menu.Item>
+                <Menu.Item component="a" href="/profile">
+                  Profile
+                </Menu.Item>
+                <Menu.Item component="a" href="/album">
+                  Album
+                </Menu.Item>
+                <Menu.Item component="a" href="/login">
+                  Login
+                </Menu.Item>
+                <Menu.Item component="a" href="/signup">
+                  Signup
+                </Menu.Item>
+              </Menu>
             </div>
           </div>
         </nav>

@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword  } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyADIXACUG53nCUoU2ZpGelGLfoqjjoqzKQ",
@@ -17,20 +18,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const db = getFirestore(app)
+const storage = getStorage(app)
 
-export { auth, provider, db };
-
-export const singupUserWithEmailAndPassword = async (email: string, password: string) => {
-  const auth = getAuth();
-
-  try {
-    const user = await createUserWithEmailAndPassword(auth, email, password);
-
-    alert('登録しました');
-
-    return user;
-  } catch(error) {
-    alert('登録失敗')
-    console.log(error);    
-  }
-}
+export { auth, provider, db, storage };
