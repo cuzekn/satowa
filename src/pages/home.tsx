@@ -6,12 +6,10 @@ import { useEffect, useState } from "react";
 import {
   deleteObject,
   getDownloadURL,
-  listAll,
   ref,
   uploadBytes,
 } from "firebase/storage";
 import { GiHollowCat, GiTrashCan } from "react-icons/gi";
-import { AiFillDelete } from "react-icons/ai";
 
 import { Footer } from "src/components/Layout/Footer";
 import { Header } from "src/components/Layout/Header";
@@ -25,7 +23,6 @@ import {
   query,
   serverTimestamp,
 } from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth";
 
 const Home: NextPage = () => {
   const [petName, setPetName] = useState("");
@@ -90,7 +87,6 @@ const Home: NextPage = () => {
       }
     });
     
-
     setPetName("");
     setPetImage(null);
     setPetImagePreview(undefined);
@@ -206,17 +202,6 @@ const Home: NextPage = () => {
                   <br />
                   <button
                     onClick={() => {
-                      const desertRef = ref(storage, "petProfileImages/" + post.petImageName);
-                      // Delete the file
-                      deleteObject(desertRef)
-                        .then(() => {
-                          // File deleted successfully
-                          alert("File deleted successfully");
-                        })
-                        .catch((error) => {
-                          // Uh-oh, an error occurred!
-                          alert("Error deleting file");
-                        });
                         deleteDoc(doc(db, "petProfile", post.id))
                       console.log(post.petImageName);
                     }}
