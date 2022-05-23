@@ -1,4 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import {
   deleteUser,
@@ -6,7 +7,7 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
-import { Avatar } from "@mantine/core";
+import { Avatar, Divider } from "@mantine/core";
 import { Modal } from "@mantine/core";
 
 import { Header } from "src/components/Layout/Header";
@@ -117,14 +118,35 @@ const setting: FC = () => {
     <>
       <Header title="設定">
         <div className="w-full">
-          <div className="m-5 max-w-xl bg-white mx-auto">
-            <h1 className="text-xl">ユーザー情報</h1>
+          <h1 className="m-3 text-center text-xl">ユーザー情報</h1>
+          <div className="m-5 mx-auto w-80 rounded-xl bg-white p-5 text-center">
             <button
               onClick={() => setOpened(true)}
-              className="py-1 px-3 rounded-3xl bg-primary-thinOrange hover:bg-primary-orange hover:text-white"
+              className="rounded-3xl py-1 px-3"
             >
               プロフィールを編集
             </button>
+            <Divider my="md" className="mx-3 text-primary-brown" />
+            <Link href="/">
+              <a>ペットを登録・編集</a>
+            </Link>
+            <Divider my="md" className="mx-3 text-primary-brown" />
+            <button
+              onClick={() => {
+                signOut(auth), router.push("/home");
+              }}
+            >
+              ログアウト
+            </button>
+            <Divider my="md" className="mx-3 text-primary-brown" />
+            <button
+              onClick={() => {
+                deleteUser(user!), router.push("/home");
+              }}
+            >
+              退会
+            </button>
+            <Divider my="md" className="mx-3 text-primary-brown" />
             <dl>
               <dt>
                 <button onClick={getUser}>getUser</button>
@@ -148,23 +170,8 @@ const setting: FC = () => {
                 )}
               </dd>
             </dl>
-            <button
-              className="bg-primary-green text-white p-3 rounded-lg mx-20 my-5"
-              onClick={() => {
-                signOut(auth), router.push("/home");
-              }}
-            >
-              Logout
-            </button>
+
             <br />
-            <button
-              className="bg-primary-green text-white p-3 rounded-lg mx-20"
-              onClick={() => {
-                deleteUser(user!), router.push("/home");
-              }}
-            >
-              退会
-            </button>
           </div>
         </div>
 
@@ -177,19 +184,19 @@ const setting: FC = () => {
                 <input
                   type="text"
                   onChange={(e) => setUpdataUsername(e.target.value)}
-                  className="w-full h-10 rounded-md border-2 border-primary-orange hover:border-primary-thinOrange focus:outline-primary-orange px-2"
+                  className="h-10 w-full rounded-md border-2 border-primary-orange px-2 hover:border-primary-thinOrange focus:outline-primary-orange"
                 />
               </li>
               <button
                 onClick={editName}
-                className="my-7 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange hover:text-white rounded-3xl shadow-lg"
+                className="my-7 h-12 w-full rounded-3xl bg-primary-thinOrange text-2xl shadow-lg hover:bg-primary-orange hover:text-white"
               >
                 名前の変更
               </button>
               <li>変更後のアイコン</li>
               <li>
                 <label htmlFor="image">
-                  <div className="w-32 h-32 rounded-full border-2 cursor-pointer">
+                  <div className="h-32 w-32 cursor-pointer rounded-full border-2">
                     {user ? (
                       <img
                         src={petImagePreview}
@@ -218,7 +225,7 @@ const setting: FC = () => {
               </li>
               <button
                 onClick={editImage}
-                className="my-7 w-full h-12 text-2xl bg-primary-thinOrange hover:bg-primary-orange hover:text-white rounded-3xl shadow-lg"
+                className="my-7 h-12 w-full rounded-3xl bg-primary-thinOrange text-2xl shadow-lg hover:bg-primary-orange hover:text-white"
               >
                 画像の変更
               </button>
