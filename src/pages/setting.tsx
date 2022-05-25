@@ -127,7 +127,7 @@ const setting: FC = () => {
               プロフィールを編集
             </button>
             <Divider my="md" className="mx-3 text-primary-brown" />
-            <Link href="/">
+            <Link href="/addpet">
               <a>ペットを登録・編集</a>
             </Link>
             <Divider my="md" className="mx-3 text-primary-brown" />
