@@ -23,6 +23,7 @@ import {
   query,
   serverTimestamp,
 } from "firebase/firestore";
+import PetProfiles from "src/components/PetProfiles";
 
 const Home: NextPage = () => {
   const [petName, setPetName] = useState("");
@@ -134,49 +135,6 @@ const Home: NextPage = () => {
           </div>
         </div>
 
-        <div className="flex justify-center">
-          <div className="my-6 w-96 rounded-xl bg-white">
-            <label htmlFor="name">ペットの名前</label>
-            <br />
-            <input
-              id="name"
-              type="text"
-              placeholder="ペットの名前を入力してください"
-              required
-              value={petName}
-              onChange={(e) => setPetName(e.target.value)}
-              className="h-10 w-full rounded-md border-2 border-primary-orange px-2 hover:border-primary-thinOrange focus:outline-primary-brown"
-            />
-            <label htmlFor="image">
-              <div className="h-32 w-32 cursor-pointer rounded-full border-2">
-                {petImagePreview ? (
-                  <img
-                    src={petImagePreview!}
-                    className="h-32 w-full rounded-full object-cover"
-                  />
-                ) : (
-                  <GiHollowCat size={64} className="m-auto h-32 text-center" />
-                )}
-              </div>
-              <input
-                id="image"
-                type="file"
-                accept=".jpg, .jpeg, .png"
-                onChange={onChangeImageHandler}
-                className="hidden"
-                required
-              />
-            </label>
-            <button
-              onClick={addImage}
-              disabled={!petName || !petImage}
-              className="mt-4 mb-8 h-12 w-full rounded-3xl bg-primary-thinOrange text-2xl shadow-lg hover:bg-primary-orange hover:text-white disabled:bg-slate-300"
-            >
-              作成
-            </button>
-          </div>
-        </div>
-
         <div className="m-auto">
           <div>
             <div className="mb-3 flex justify-center pt-3 text-3xl underline">
@@ -184,34 +142,7 @@ const Home: NextPage = () => {
             </div>
           </div>
           <div className="text-center">
-            <div className="grid grid-cols-2 justify-items-center gap-y-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
-              {petProfile.map((post) => (
-                <div
-                  key={post.id}
-                  className="w-40 rounded-lg bg-green-800 p-4 text-center shadow-xl"
-                >
-                  <div className="flex justify-center ">
-                    <img
-                      src={post.petImage}
-                      alt="ペットの画像"
-                      className="h-32 w-full rounded-full object-cover"
-                    />
-                  </div>
-                  <div className="py-2 text-white">{post.petName}</div>
-                  <button className="text-orange-600">Tap</button>
-                  <br />
-                  <button
-                    onClick={() => {
-                        deleteDoc(doc(db, "petProfile", post.id))
-                      console.log(post.petImageName);
-                    }}
-                    className="text-lg text-slate-200"
-                  >
-                    <GiTrashCan />
-                  </button>
-                </div>
-              ))}
-            </div>
+            <PetProfiles id={""} petName={""} petImage={""} petImageName={""} />
             <div className="m-4">
               <Link href="/album">
                 <a className="text-3xl text-orange-500">もっと見る</a>
