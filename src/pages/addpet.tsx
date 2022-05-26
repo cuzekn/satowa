@@ -30,7 +30,7 @@ const addpet = () => {
           <input
             id="name"
             type="text"
-            placeholder="名前を入力してください"
+            placeholder="豆助"
             required
             // value={petName}
             // onChange={(e) => setPetName(e.target.value)}
