@@ -3,12 +3,17 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { GiHollowCat } from "react-icons/gi";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
+import { GiHollowCat, GiTrashCan } from "react-icons/gi";
 
 import { Footer } from "src/components/Layout/Footer";
 import { Header } from "src/components/Layout/Header";
-import { db, storage } from "src/firebase/firebaseConfig";
+import { auth, db, storage } from "src/firebase/firebaseConfig";
 import {
   addDoc,
   collection,
@@ -16,43 +21,48 @@ import {
   doc,
   onSnapshot,
   query,
+  serverTimestamp,
 } from "firebase/firestore";
 
 const Home: NextPage = () => {
   const [petName, setPetName] = useState("");
   const [petImage, setPetImage] = useState<File | null>(null);
-  const [petImagePreview, setPetImagePreview] = useState<File | null | string>(null);
-
+  const [petImagePreview, setPetImagePreview] = useState<string | undefined>(
+    undefined
+  );
+  const [petImageName, setPetImageName] = useState("");
   const [petProfile, setPetProfile] = useState([
     {
       id: "",
       petName: "",
       petImage: "",
+      petImageName: "",
     },
   ]);
 
   useEffect(() => {
     const q = query(collection(db, "petProfile"));
+    
     onSnapshot(q, (snapshot) => {
       setPetProfile(
         snapshot.docs.map((doc) => ({
           id: doc.id,
           petName: doc.data().petName,
           petImage: doc.data().petImage,
+          petImageName: doc.data().petImageName,
         }))
       );
     });
   }, []);
 
-  const onChangeImageHandler = async (e:any) => {
+  const onChangeImageHandler = async (e: any) => {
     console.log(e.target.files[0]);
     setPetImage(e.target.files[0]);
     setPetImagePreview(window.URL.createObjectURL(e.target.files[0]));
   };
 
-  const addImage = async () => {
+  const addImage = async (petImage: any) => {
     let url = "";
-    if (petImage) {
       const S =
         "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
       const N = 16;
@@ -60,19 +70,46 @@ const Home: NextPage = () => {
         .map((n) => S[n % S.length])
         .join("");
       const fileName = randomChar + "_" + petImage.name;
+      console.log(fileName);
+      console.log("jpg: " + petImageName);
       await uploadBytes(ref(storage, `petProfileImages/${fileName}`), petImage);
       url = await getDownloadURL(ref(storage, `petProfileImages/${fileName}`));
-    }
     console.log(url);
 
-    await addDoc(collection(db, "petProfile"), {
-      petName: petName,
-      petImage: url,
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        addDoc(collection(db, "petProfile"), {
+          petName: petName,
+          petImage: url,
+          petImageName: petImageName,
+          timestamp: serverTimestamp(),
+        });
+      }
     });
-
+    
     setPetName("");
     setPetImage(null);
-    setPetImagePreview(null);
+    setPetImagePreview(undefined);
+    setPetImageName("");
+  };
+
+  // const deleteImage = async (e) => {
+  //   await deleteDoc(collection(db, "petProfileImages"), e.target.id);
+  //   await ref(storage, `petProfileImages/${e.target.id}`).delete();
+  // }
+
+  const deleteImage = (e: any) => {
+    console.log(e.target);
+    const desertRef = ref(storage, `petProfileImages/${e}`);
+    deleteObject(desertRef)
+      .then(() => {
+        // File deleted successfully
+        alert("File deleted successfully");
+      })
+      .catch((error) => {
+        // Uh-oh, an error occurred!
+        alert("Error deleting file");
+      });
   };
 
   return (
@@ -96,9 +133,9 @@ const Home: NextPage = () => {
             />
           </div>
         </div>
-        
+
         <div className="flex justify-center">
-          <div className="my-6 w-96 bg-white rounded-xl">
+          <div className="my-6 w-96 rounded-xl bg-white">
             <label htmlFor="name">ペットの名前</label>
             <br />
             <input
@@ -108,14 +145,14 @@ const Home: NextPage = () => {
               required
               value={petName}
               onChange={(e) => setPetName(e.target.value)}
-              className="px-2 w-full h-10 rounded-md border-2 border-primary-orange hover:border-primary-thinOrange focus:outline-primary-brown"
+              className="h-10 w-full rounded-md border-2 border-primary-orange px-2 hover:border-primary-thinOrange focus:outline-primary-brown"
             />
             <label htmlFor="image">
-              <div className="w-32 h-32 rounded-full border-2 cursor-pointer">
+              <div className="h-32 w-32 cursor-pointer rounded-full border-2">
                 {petImagePreview ? (
                   <img
-                    src={petImagePreview}
-                    className="rounded-full h-32 w-full object-cover"
+                    src={petImagePreview!}
+                    className="h-32 w-full rounded-full object-cover"
                   />
                 ) : (
                   <GiHollowCat size={64} className="m-auto h-32 text-center" />
@@ -133,7 +170,7 @@ const Home: NextPage = () => {
             <button
               onClick={addImage}
               disabled={!petName || !petImage}
-              className="mt-4 mb-8 w-full h-12 text-2xl disabled:bg-slate-300 hover:text-white bg-primary-thinOrange hover:bg-primary-orange rounded-3xl shadow-lg"
+              className="mt-4 mb-8 h-12 w-full rounded-3xl bg-primary-thinOrange text-2xl shadow-lg hover:bg-primary-orange hover:text-white disabled:bg-slate-300"
             >
               作成
             </button>
@@ -142,28 +179,35 @@ const Home: NextPage = () => {
 
         <div className="m-auto">
           <div>
-            <div className="flex justify-center pt-3 mb-3 text-3xl underline">
+            <div className="mb-3 flex justify-center pt-3 text-3xl underline">
               New Family
             </div>
           </div>
           <div className="text-center">
-            <div className="grid grid-cols-2 gap-y-5 justify-items-center sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
+            <div className="grid grid-cols-2 justify-items-center gap-y-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
               {petProfile.map((post) => (
-                <div className="p-4 w-40 text-center bg-green-800 rounded-lg shadow-xl">
+                <div
+                  key={post.id}
+                  className="w-40 rounded-lg bg-green-800 p-4 text-center shadow-xl"
+                >
                   <div className="flex justify-center ">
                     <img
                       src={post.petImage}
                       alt="ペットの画像"
-                      className="rounded-full h-32 w-full object-cover"
+                      className="h-32 w-full rounded-full object-cover"
                     />
                   </div>
                   <div className="py-2 text-white">{post.petName}</div>
                   <button className="text-orange-600">Tap</button>
                   <br />
                   <button
-                    onClick={(e) => deleteDoc(doc(db, "petProfile", post.id))}
+                    onClick={() => {
+                        deleteDoc(doc(db, "petProfile", post.id))
+                      console.log(post.petImageName);
+                    }}
+                    className="text-lg text-slate-200"
                   >
-                    delete
+                    <GiTrashCan />
                   </button>
                 </div>
               ))}
@@ -178,7 +222,7 @@ const Home: NextPage = () => {
 
         <div className="m-auto">
           <div>
-            <div className="flex justify-center pt-3 mb-3 text-3xl underline">
+            <div className="mb-3 flex justify-center pt-3 text-3xl underline">
               New Album
             </div>
           </div>
@@ -190,107 +234,6 @@ const Home: NextPage = () => {
             </div>
           </div>
         </div>
-
-        {/* <div>
-          <div className="flex justify-center pt-3 my-3 text-3xl underline">
-            New Photo
-          </div>
-          <div className="flex justify-center">
-            <div className="grid md:grid-cols-2 gap-y-5 md:gap-5 lg:grid-cols-3 lg:gap-5">
-              <div className="w-96 h-32 bg-green-800 rounded-lg">
-                <div className="flex bg-sky-200">
-                  <Image
-                    className="bg-slate-400 object-none"
-                    src="/images/onigiri.jpg"
-                    width={100}
-                    height={100}
-                    alt="pet"
-                  />
-                  <div className="mx-auto">
-                    <div className="text-white bg-slate-400">蘭太郎</div>
-                    <p className="pl-3 w-60 h-8 bg-white">おにぎりちゃん</p>
-                  </div>
-                </div>
-                <div className="text-center bg-blue-400">
-                  <button className="text-orange-500 bg-green-300 ">Tap</button>
-                </div>
-              </div>
-              <div className="w-96 h-32 bg-green-800 rounded-lg">
-                <div className="flex bg-sky-200">
-                  <Image
-                    className="bg-slate-400 object-none"
-                    src="/images/onigiri.jpg"
-                    width={100}
-                    height={100}
-                    alt="pet"
-                  />
-                  <div className="mx-auto">
-                    <div className="text-white bg-slate-400">蘭太郎</div>
-                    <p className="pl-3 w-60 h-8 bg-white">おにぎりちゃん</p>
-                  </div>
-                </div>
-                <div className="text-center bg-blue-400">
-                  <button className="text-orange-500 bg-green-300 ">Tap</button>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-green-800 w-96">
-              <div className="flex">
-                <div>
-                  <Image
-                    src="/images/onigiri.jpg"
-                    alt="pet"
-                    width={80}
-                    height={80}
-                    className="rounded-full"
-                  />
-                </div>
-                <div className="flex">
-                  <p className="text-white px-2">Name</p>
-                  <p className="text-white">time</p>
-                </div>
-                <div>
-                  <Image
-                    className="bg-slate-400 object-none"
-                    src="/images/onigiri.jpg"
-                    width={200}
-                    height={200}
-                    alt="pet"
-                  />
-                </div>
-              </div>
-              <div className="flex"></div>
-            </div>
-
-            <div>
-              <div className="flex">
-                <div>
-                  <Image
-                    src="/images/rantarou.jpg"
-                    width={80}
-                    height={80}
-                    alt="pet"
-                    className="rounded-full"
-                  />
-                </div>
-                <div className="flex">
-                  <p>name</p>
-                  <p>time</p>
-                </div>
-                <div></div>
-              </div>
-              <div className="">
-                <Image
-                  src="/images/rantarou.jpg"
-                  width={200}
-                  height={200}
-                  alt="pet"
-                />
-              </div>
-            </div>
-          </div>
-        </div> */}
       </main>
       <Footer />
     </>
