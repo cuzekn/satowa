@@ -9,8 +9,6 @@ import {
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useEffect, useState } from "react";
 import { FiImage } from "react-icons/fi";
-import dayjs from "dayjs";
-import { Calendar } from "@mantine/dates";
 
 import { Header } from "src/components/Layout/Header";
 import PetProfiles from "src/components/PetProfiles";
