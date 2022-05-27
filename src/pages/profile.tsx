@@ -1,6 +1,5 @@
 import React from "react";
 import { Image, Tabs, SimpleGrid } from "@mantine/core";
-import { Star } from "tabler-icons-react";
 
 import { Header } from "src/components/Layout/Header";
 
