@@ -105,5 +105,6 @@ export const Header: VFC<Props> = ({ children, title = "HP by Nextjs" }) => {
         {children}
       </main>
     </>
+
   );
 };
